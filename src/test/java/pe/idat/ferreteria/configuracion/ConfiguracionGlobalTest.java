@@ -150,17 +150,21 @@ class ConfiguracionGlobalTest {
         AtomicBoolean seguir = new AtomicBoolean(true);
         AtomicInteger inconsistentes = new AtomicInteger();
         AtomicInteger lecturas = new AtomicInteger();
+        CountDownLatch listos = new CountDownLatch(4);
         ExecutorService ejecutor = Executors.newFixedThreadPool(5);
         try {
             ejecutor.submit(() -> {
+                listos.await();   // en máquinas con pocos núcleos el escritor podría terminar antes de que lean
                 for (int i = 0; i < 20_000; i++) {
                     configuracion.actualizar(i % 2 == 0 ? b : a);
                 }
                 seguir.set(false);
+                return null;
             });
             for (int r = 0; r < 4; r++) {
                 ejecutor.submit(() -> {
-                    while (seguir.get()) {
+                    listos.countDown();
+                    do {
                         ParametrosTienda foto = configuracion.getParametros();
                         lecturas.incrementAndGet();
                         boolean esA = foto.ruc().equals(a.ruc()) && foto.tasaIgv().equals(a.tasaIgv())
@@ -170,7 +174,7 @@ class ConfiguracionGlobalTest {
                         if (!esA && !esB) {
                             inconsistentes.incrementAndGet();
                         }
-                    }
+                    } while (seguir.get());
                 });
             }
             ejecutor.shutdown();
