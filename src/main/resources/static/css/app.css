@@ -1,0 +1,4 @@
+/* Ajustes propios sobre Bootstrap 5 */
+.navbar .nav-link.disabled {
+    opacity: .55;
+}

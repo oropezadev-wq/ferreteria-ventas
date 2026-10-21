@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragmentos/layout :: head('Inicio')}"></head>
+<body class="d-flex flex-column min-vh-100">
+<nav th:replace="~{fragmentos/layout :: navbar('inicio')}"></nav>
+
+<main class="container flex-grow-1">
+    <h1 class="h3 mb-3">Gestor de ventas</h1>
+    <p class="lead">Registro de ventas, control de inventario y reportes de la ferretería.</p>
+    <div class="row g-3">
+        <div class="col-12 col-md-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h2 class="h5 card-title">Inventario</h2>
+                    <p class="card-text">Productos, precios con IGV y alertas de stock bajo.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-md-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h2 class="h5 card-title">Punto de venta</h2>
+                    <p class="card-text">Ventas con varios métodos de pago y ticket interno.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-md-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h2 class="h5 card-title">Reportes</h2>
+                    <p class="card-text">Ventas por período e inventario valorizado, descargables en HTML.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <p class="mt-4 text-body-secondary small">Fecha actual: <span th:text="${#temporals.format(hoy, 'dd/MM/yyyy')}">01/01/2026</span></p>
+</main>
+
+<footer th:replace="~{fragmentos/layout :: footer}"></footer>
+<th:block th:replace="~{fragmentos/layout :: scripts}"></th:block>
+</body>
+</html>

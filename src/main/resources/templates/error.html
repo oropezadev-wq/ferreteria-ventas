@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragmentos/layout :: head('Error')}"></head>
+<body class="d-flex flex-column min-vh-100">
+<nav th:replace="~{fragmentos/layout :: navbar('')}"></nav>
+
+<main class="container flex-grow-1">
+    <div class="alert alert-warning" role="alert">
+        <h1 class="h4 alert-heading">
+            <span th:text="${status}">500</span>
+            <span th:text="${error}">Error</span>
+        </h1>
+        <p class="mb-0"
+           th:text="${mensaje} ?: (${status} == 404 ? 'La página no existe.' : 'No se pudo completar la operación.')">
+            No se pudo completar la operación.
+        </p>
+    </div>
+    <a class="btn btn-outline-secondary" th:href="@{/}">Volver al inicio</a>
+</main>
+
+<footer th:replace="~{fragmentos/layout :: footer}"></footer>
+<th:block th:replace="~{fragmentos/layout :: scripts}"></th:block>
+</body>
+</html>
