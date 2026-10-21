@@ -56,7 +56,7 @@ flowchart LR
 - **aplicacion**: orquesta casos de uso (por ejemplo, registrar una venta descontando stock en todo o nada).
 - **infraestructura.persistencia**: `Repositorio<T>` y su implementación en memoria.
 - **reportes**: un subpaquete por patrón; lee datos solo a través de `ConsultaDatosReporte`.
-- **web**: pantallas Thymeleaf + Bootstrap y API REST opcional; solo conoce `aplicacion` y `ReporteFacade`.
+- **web**: pantallas Thymeleaf + Bootstrap; solo conoce `aplicacion` y `ReporteFacade`.
 
 ```
 src/main/java/pe/idat/ferreteria
@@ -67,13 +67,13 @@ src/main/java/pe/idat/ferreteria
 ├── aplicacion/                  servicios de aplicación
 ├── infraestructura/persistencia Repositorio, RepositorioEnMemoria
 ├── reportes/
-│   ├── modelo/                  Reporte, TipoReporte, Periodo, Granularidad, NivelDetalle, TipoContenido
-│   ├── datos/                   ConsultaDatosReporte y records de lectura
+│   ├── modelo/                  Reporte, ReporteBase, TipoReporte, SeccionPlantilla, Periodo, Granularidad
+│   ├── datos/                   ConsultaDatosReporte y filas de lectura
 │   ├── prototipo/               Prototipo<T> y plantillas
-│   ├── builder/                 ReporteBuilder y ensambladores
-│   ├── composite/               ElementoReporte y sus nodos
+│   ├── builder/                 ReporteBuilder y DirectorReporte
+│   ├── composite/               ElementoReporte, Seccion, Parrafo, Tabla, Grafico
 │   ├── decorador/               sello, marca de agua, firma simulada
-│   └── fachada/                 ReporteFacade, SolicitudReporte, ReporteGenerado, ExtraReporte
+│   └── fachada/                 ReporteFacade, SolicitudReporte, ReporteGenerado
 └── web/                         controladores, formularios, manejo de errores, api/
 src/main/resources/templates     vistas Thymeleaf y fragmentos del layout
 src/main/resources/static        CSS propio y Bootstrap local
@@ -87,8 +87,8 @@ docs/                            decisiones (ADR), UML, capturas y sustentación
 |---|---|---|
 | Singleton | `configuracion.ConfiguracionGlobal` | Parámetros únicos de la tienda (razón social, IGV, moneda, formato), expuestos como bean por interfaces |
 | Prototype | `reportes.prototipo` | Plantillas de reporte que se clonan en profundidad para derivar variantes |
-| Builder | `reportes.builder` | Armar el árbol de un reporte paso a paso, desde plantilla o desde cero |
-| Composite | `reportes.composite` | Secciones que contienen párrafos, tablas, gráficos e indicadores, anidadas sin límite |
+| Builder | `reportes.builder` | Armar un reporte paso a paso; `DirectorReporte` decide los pasos según la plantilla |
+| Composite | `reportes.composite` | Secciones que contienen párrafos, tablas, gráficos u otras secciones, sin límite |
 | Decorator | `reportes.decorador` | Agregar sello, marca de agua y firma simulada sin cambiar el reporte base |
 | Facade | `reportes.fachada` | Un único método `generarReporte` que oculta todo el flujo anterior |
 

@@ -13,8 +13,22 @@ Guía para el equipo. Si es tu primera vez trabajando con git en grupo, sigue lo
 
 ## 1. Preparar el entorno (una sola vez)
 
-- JDK 21 (Temurin) e IntelliJ IDEA (Community sirve).
-- Git instalado. Configura tu identidad con **tu** cuenta de GitHub:
+Programas que hay que instalar:
+
+| Programa | Dónde | Nota |
+|---|---|---|
+| JDK 21 (Temurin) | https://adoptium.net | En el instalador marca **"Set JAVA_HOME variable"** y **"Add to PATH"**. |
+| IntelliJ IDEA Community | https://www.jetbrains.com/idea/download | Gratis. |
+| Git | https://git-scm.com | Opciones por defecto. |
+
+**Maven no se instala.** Los archivos `mvnw` (Linux/Mac) y `mvnw.cmd` (Windows) son el *Maven Wrapper*: la
+primera vez descargan solos la versión correcta de Maven. Así todo el equipo usa la misma.
+
+Para comprobar que Java quedó bien, en una terminal nueva: `java -version` debe decir `21`. Si dice que no
+encuentra el comando, el JDK se instaló sin las dos opciones de arriba: vuelve a correr el instalador y
+márcalas (o ejecuta las pruebas desde IntelliJ, que tiene su propia configuración de Java).
+
+Configura tu identidad en Git con **tu** cuenta de GitHub:
 
 ```bash
 git config --global user.name "tu-usuario-de-github"
@@ -32,7 +46,19 @@ cd ferreteria-ventas
 
 Para correr la app: ejecutar `FerreteriaApplication` en IntelliJ y abrir http://localhost:8080.
 
-## 2. Empezar una tarea
+## 2. Qué tengo que hacer
+
+1. Abre tu issue (pestaña **Issues**, filtra por tu usuario).
+2. En IntelliJ, abre la vista **TODO** (menú *View → Tool Windows → TODO*): lista todos los `// TODO (issue ...)`
+   del código. Los tuyos dicen el nombre de tu issue y explican paso a paso qué escribir.
+3. Mira el **ejemplo resuelto** de tu parte (`Parrafo`, `MarcaAguaDecorador` o `PagoEfectivo`) y sigue la
+   misma forma.
+4. Reemplaza el `throw new UnsupportedOperationException(...)` por tu código.
+5. Escribe tus pruebas en `src/test/java` (mismo paquete que tu clase). Para correrlas en IntelliJ: clic
+   derecho sobre la clase de prueba → *Run*.
+6. El diseño de cada patrón y qué decir en la sustentación está en `docs/diseno.md`.
+
+## 3. Empezar una tarea
 
 Siempre desde un `main` actualizado:
 
@@ -42,7 +68,7 @@ git pull
 git checkout -b nombre-de-la-tarea     # ej.: patron-composite, productos-inventario
 ```
 
-## 3. Guardar avances (commits)
+## 4. Guardar avances (commits)
 
 Commits pequeños y frecuentes. Formato del mensaje:
 
@@ -65,7 +91,7 @@ git add .
 git commit -m "feat(producto): agrega producto con control de stock"
 ```
 
-## 4. Subir la rama y abrir el Pull Request
+## 5. Subir la rama y abrir el Pull Request
 
 ```bash
 ./mvnw verify                       # debe terminar en BUILD SUCCESS
@@ -79,11 +105,11 @@ En GitHub aparece el botón **Compare & pull request**. En la descripción:
 
 El CI corre las pruebas automáticamente en el PR. Si sale en rojo, revisa el detalle, corrige y vuelve a hacer `push` a la misma rama.
 
-## 5. Revisar el PR de un compañero
+## 6. Revisar el PR de un compañero
 
 En la pestaña *Files changed*: ¿se entiende?, ¿tiene pruebas?, ¿respeta el diseño (`docs/diseno.md`)? Comenta o aprueba con *Review changes → Approve*.
 
-## 6. Si `main` avanzó mientras trabajabas
+## 7. Si `main` avanzó mientras trabajabas
 
 ```bash
 git checkout main
