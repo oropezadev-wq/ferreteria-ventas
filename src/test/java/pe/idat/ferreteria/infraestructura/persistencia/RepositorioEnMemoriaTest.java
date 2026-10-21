@@ -71,6 +71,47 @@ class RepositorioEnMemoriaTest {
     }
 
     @Test
+    void guardarConIdMenorNoRetrocedeLaSecuencia() {
+        repositorio.guardar(new Articulo(10L, "Cemento"));
+        repositorio.guardar(new Articulo(3L, "Arena"));
+
+        assertThat(repositorio.siguienteId()).isEqualTo(11L);
+        assertThat(repositorio.existePorId(3L)).isTrue();
+    }
+
+    @Test
+    void idsConcurrentesSonUnicosYCorrelativos() throws Exception {
+        int hilos = 16;
+        int porHilo = 500;
+        java.util.concurrent.ExecutorService ejecutor = java.util.concurrent.Executors.newFixedThreadPool(hilos);
+        java.util.concurrent.CountDownLatch largada = new java.util.concurrent.CountDownLatch(1);
+        try {
+            List<java.util.concurrent.Future<?>> tareas = new java.util.ArrayList<>();
+            for (int h = 0; h < hilos; h++) {
+                tareas.add(ejecutor.submit(() -> {
+                    largada.await();
+                    for (int i = 0; i < porHilo; i++) {
+                        nuevo("Pieza");
+                    }
+                    return null;
+                }));
+            }
+            largada.countDown();
+            for (java.util.concurrent.Future<?> tarea : tareas) {
+                tarea.get(20, java.util.concurrent.TimeUnit.SECONDS);
+            }
+        } finally {
+            ejecutor.shutdownNow();
+        }
+
+        List<Articulo> todos = repositorio.listar();
+        assertThat(todos).hasSize(hilos * porHilo);
+        assertThat(todos.get(0).getId()).isEqualTo(1L);
+        assertThat(todos.get(todos.size() - 1).getId()).isEqualTo((long) hilos * porHilo);
+        assertThat(repositorio.siguienteId()).isEqualTo(hilos * porHilo + 1L);
+    }
+
+    @Test
     void listarYFiltrarDevuelvenOrdenadoPorId() {
         repositorio.guardar(new Articulo(5L, "Tubo PVC 1/2"));
         repositorio.guardar(new Articulo(2L, "Tubo PVC 3/4"));

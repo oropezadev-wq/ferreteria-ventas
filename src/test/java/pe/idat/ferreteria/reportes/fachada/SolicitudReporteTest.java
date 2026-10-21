@@ -37,6 +37,33 @@ class SolicitudReporteTest {
     }
 
     @Test
+    void marcaDeAguaEnElLimiteYConEspaciosAlrededorSeAcepta() {
+        Set<ExtraReporte> conMarca = Set.of(ExtraReporte.MARCA_AGUA);
+        String treinta = "Ñ".repeat(SolicitudReporte.LARGO_MAXIMO_MARCA_AGUA);
+
+        assertThat(new SolicitudReporte(TipoReporte.VENTAS_DIARIO, HOY, NivelDetalle.RESUMEN, conMarca, treinta)
+                .textoMarcaAgua()).isEqualTo(treinta);
+        // El largo se mide después de recortar espacios.
+        assertThat(new SolicitudReporte(TipoReporte.VENTAS_DIARIO, HOY, NivelDetalle.RESUMEN, conMarca,
+                "   " + treinta + "   ").textoMarcaAgua()).isEqualTo(treinta);
+        assertThatThrownBy(() -> new SolicitudReporte(TipoReporte.VENTAS_DIARIO, HOY, NivelDetalle.RESUMEN, conMarca, null))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    void copiaDefensivaDeExtras() {
+        java.util.Set<ExtraReporte> origen = new java.util.HashSet<>(Set.of(ExtraReporte.SELLO));
+        SolicitudReporte solicitud = new SolicitudReporte(TipoReporte.VENTAS_DIARIO, HOY, NivelDetalle.RESUMEN,
+                origen, null);
+
+        origen.add(ExtraReporte.FIRMA);
+
+        assertThat(solicitud.extras()).containsExactly(ExtraReporte.SELLO);
+        assertThat(solicitud.tieneExtra(ExtraReporte.FIRMA)).isFalse();
+        assertThat(solicitud.tieneExtra(null)).isFalse();
+    }
+
+    @Test
     void rechazaExtrasConNulos() {
         List<ExtraReporte> conNulo = java.util.Arrays.asList(ExtraReporte.SELLO, null);
 

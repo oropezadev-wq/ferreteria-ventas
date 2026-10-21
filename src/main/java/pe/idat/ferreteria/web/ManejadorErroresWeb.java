@@ -3,6 +3,7 @@ package pe.idat.ferreteria.web;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.apache.tomcat.util.http.InvalidParameterException;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
@@ -42,6 +43,12 @@ public class ManejadorErroresWeb {
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public ModelAndView tipoInvalido(MethodArgumentTypeMismatchException ex) {
         return vista(HttpStatus.BAD_REQUEST, "El valor '" + ex.getValue() + "' no es válido para " + ex.getName());
+    }
+
+    /** Parámetros que no se pudieron decodificar (no UTF-8 o un escape % inválido): es un error del cliente. */
+    @ExceptionHandler(InvalidParameterException.class)
+    public ModelAndView parametroMalCodificado(InvalidParameterException ex) {
+        return vista(HttpStatus.BAD_REQUEST, "Los datos enviados no tienen una codificación válida (UTF-8).");
     }
 
     /** Error no previsto: se registra completo en el log y en pantalla no se muestran detalles internos. */

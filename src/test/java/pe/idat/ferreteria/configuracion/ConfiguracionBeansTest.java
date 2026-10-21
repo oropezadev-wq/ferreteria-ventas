@@ -37,6 +37,19 @@ class ConfiguracionBeansTest {
         assertThat(configuracion).isSameAs(instancia);
     }
 
+    @Autowired
+    private org.springframework.context.ApplicationContext contexto;
+
+    @Test
+    void elContextoTieneUnSoloBeanPorCadaInterfazDeConfiguracion() {
+        assertThat(contexto.getBeansOfType(ConfiguracionGlobal.class)).hasSize(1);
+        assertThat(contexto.getBeansOfType(ParametrosFiscales.class)).hasSize(1);
+        assertThat(contexto.getBeansOfType(FormatoRegional.class)).hasSize(1);
+        assertThat(contexto.getBeansOfType(DatosTienda.class)).hasSize(1);
+        assertThat(contexto.isSingleton("configuracionGlobal")).isTrue();
+        assertThat(contexto.getBean("configuracionGlobal")).isSameAs(ConfiguracionGlobal.getInstancia());
+    }
+
     @Test
     void relojUsaLaZonaDeLima() {
         assertThat(reloj.getZone().getId()).isEqualTo("America/Lima");
