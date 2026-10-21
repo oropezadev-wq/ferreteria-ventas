@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragmentos/layout :: head('Ticket de venta')}"></head>
+<body class="d-flex flex-column min-vh-100">
+<nav th:replace="~{fragmentos/layout :: navbar('ventas')}"></nav>
+
+<main class="container flex-grow-1">
+    <div class="card mx-auto" style="max-width: 36rem">
+        <div class="card-body">
+            <h1 class="h5 text-center mb-0" th:text="${tienda?.razonSocial}">Ferretería</h1>
+            <p class="text-center small mb-3">
+                RUC <span th:text="${tienda?.ruc}">20999999991</span> ·
+                <span th:text="${tienda?.direccion}">Av. Ejemplo 123</span>
+            </p>
+            <p class="mb-1"><strong>Ticket</strong> <span th:text="${venta.numero}">V-000001</span></p>
+            <p class="mb-3 small" th:text="${#temporals.format(venta.fechaHora, 'dd/MM/yyyy HH:mm')}">21/10/2026 10:00</p>
+
+            <table class="table table-sm">
+                <thead>
+                <tr><th>Producto</th><th class="text-end">Cant.</th><th class="text-end">P. unit.</th><th class="text-end">Subtotal</th></tr>
+                </thead>
+                <tbody>
+                <tr th:each="l : ${venta.lineas}">
+                    <td th:text="${l.producto}">Martillo</td>
+                    <td class="text-end" th:text="${l.cantidad}">1</td>
+                    <td class="text-end" th:text="${l.precioUnitario}">S/ 39.90</td>
+                    <td class="text-end" th:text="${l.subtotal()}">S/ 39.90</td>
+                </tr>
+                </tbody>
+            </table>
+
+            <dl class="row mb-2 small">
+                <dt class="col-7 text-end">Op. gravada</dt><dd class="col-5 text-end mb-0" th:text="${opGravada}">S/ 33.81</dd>
+                <dt class="col-7 text-end">IGV</dt><dd class="col-5 text-end mb-0" th:text="${igv}">S/ 6.09</dd>
+                <dt class="col-7 text-end fs-6">Total</dt><dd class="col-5 text-end mb-0 fs-6 fw-bold" th:text="${venta.total}">S/ 39.90</dd>
+            </dl>
+            <p class="small mb-0" th:text="${venta.pago.descripcion(venta.total)}">Efectivo</p>
+            <p class="small text-body-secondary mt-2 mb-0">Ticket interno, no es comprobante de pago.</p>
+        </div>
+    </div>
+    <div class="text-center mt-3">
+        <a class="btn btn-outline-secondary" th:href="@{/ventas}">Volver a ventas</a>
+        <a class="btn btn-primary" th:href="@{/ventas/nueva}">Nueva venta</a>
+    </div>
+</main>
+
+<footer th:replace="~{fragmentos/layout :: footer}"></footer>
+<th:block th:replace="~{fragmentos/layout :: scripts}"></th:block>
+</body>
+</html>

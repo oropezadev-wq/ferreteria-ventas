@@ -12,7 +12,6 @@ import java.util.Objects;
  *   <li>Las operaciones entre monedas distintas lanzan {@link MonedaIncompatibleException}.</li>
  *   <li>{@code 10} y {@code 10.00} son iguales porque el monto se normaliza a escala 2 al crearse.</li>
  * </ul>
- * Contrato común (Integrante 1).
  */
 public record Dinero(BigDecimal monto, Currency moneda) implements Comparable<Dinero> {
 
@@ -40,6 +39,19 @@ public record Dinero(BigDecimal monto, Currency moneda) implements Comparable<Di
 
     public static Dinero cero(Currency moneda) {
         return new Dinero(BigDecimal.ZERO, moneda);
+    }
+
+    /** Moneda de la ferretería. */
+    public static final Currency SOLES = Currency.getInstance("PEN");
+
+    /** Atajo para montos en soles: {@code Dinero.soles("39.90")}. */
+    public static Dinero soles(String monto) {
+        return de(monto, SOLES);
+    }
+
+    /** Atajo para montos en soles a partir de un BigDecimal (por ejemplo, el valor de un formulario). */
+    public static Dinero soles(BigDecimal monto) {
+        return de(monto, SOLES);
     }
 
     public Dinero sumar(Dinero otro) {

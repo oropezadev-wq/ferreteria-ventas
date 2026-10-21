@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragmentos/layout :: head('Ventas')}"></head>
+<body class="d-flex flex-column min-vh-100">
+<nav th:replace="~{fragmentos/layout :: navbar('ventas')}"></nav>
+
+<main class="container flex-grow-1">
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+        <h1 class="h3 mb-0">Ventas</h1>
+        <a class="btn btn-primary" th:href="@{/ventas/nueva}">Nueva venta</a>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-striped align-middle">
+            <thead>
+            <tr>
+                <th>N.º</th>
+                <th>Fecha</th>
+                <th class="text-end">Productos</th>
+                <th class="text-end">Total</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="v : ${ventas}">
+                <td th:text="${v.numero}">V-000001</td>
+                <td th:text="${#temporals.format(v.fechaHora, 'dd/MM/yyyy HH:mm')}">21/10/2026 10:00</td>
+                <td class="text-end" th:text="${#lists.size(v.lineas)}">2</td>
+                <td class="text-end" th:text="${v.total}">S/ 50.00</td>
+                <td><a class="btn btn-sm btn-outline-secondary" th:href="@{/ventas/{id}(id=${v.id})}">Ver ticket</a></td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(ventas)}">
+                <td colspan="5" class="text-center text-body-secondary">Todavía no hay ventas.</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</main>
+
+<footer th:replace="~{fragmentos/layout :: footer}"></footer>
+<th:block th:replace="~{fragmentos/layout :: scripts}"></th:block>
+</body>
+</html>

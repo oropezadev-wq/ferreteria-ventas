@@ -11,7 +11,7 @@ import java.util.Optional;
  * <p>
  * Como el id llega por constructor, quien crea la entidad primero reserva uno con {@link #siguienteId()}:
  * {@code new Producto(repositorio.siguienteId(), ...)}.
- * Contrato común (Integrante 1); los repositorios específicos los agregan Integrantes 2 y 3.
+ * Los repositorios de productos y ventas la extienden.
  */
 public interface Repositorio<T extends EntidadBase> {
 

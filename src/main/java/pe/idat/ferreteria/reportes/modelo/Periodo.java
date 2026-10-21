@@ -6,7 +6,6 @@ import java.util.Objects;
 
 /**
  * Rango de fechas cerrado en ambos extremos: {@code desde} y {@code hasta} se incluyen.
- * Contrato común (Integrante 1).
  */
 public record Periodo(LocalDate desde, LocalDate hasta) {
 

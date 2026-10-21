@@ -3,20 +3,21 @@ package pe.idat.ferreteria.reportes.composite;
 import pe.idat.ferreteria.reportes.prototipo.Prototipo;
 
 /**
- * Componente del patrón Composite (diseño "seguro"): solo declara lo que comparten las hojas
- * (Parrafo, Tabla, Grafico, Indicador) y la Seccion; agregar y quitar hijos existe solo en Seccion.
+ * Patrón Composite: lo que tienen en común todas las piezas de un reporte.
  * <p>
- * Lo implementa Integrante 4.
+ * Las hojas ({@link Parrafo}, {@link Tabla}, {@link Grafico}) y la {@link Seccion}, que contiene otras piezas,
+ * se usan igual: quien arma o muestra el reporte llama a {@link #renderizarHtml()} sin preguntar qué tipo de
+ * pieza es. Por eso una sección puede tener secciones dentro, sin límite de niveles.
  */
 public abstract class ElementoReporte implements Prototipo<ElementoReporte> {
 
-    /** HTML del elemento; {@code nivel} es la profundidad en el árbol (0 = raíz). Todo texto debe ir escapado. */
-    public abstract String renderizarHtml(int nivel);
+    /** HTML de la pieza. Todo texto que venga de los datos debe pasar por {@link Html#escapar(String)}. */
+    public abstract String renderizarHtml();
 
-    /** Cantidad de elementos de este subárbol, incluido el propio elemento. */
+    /** Cuántas piezas hay en este elemento, contándose a sí mismo (una hoja devuelve 1). */
     public abstract int contarElementos();
 
-    /** Copia profunda del subárbol. */
+    /** Copia profunda: la copia no comparte con el original nada que se pueda modificar. */
     @Override
     public abstract ElementoReporte copiar();
 }

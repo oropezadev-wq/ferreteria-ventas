@@ -7,7 +7,7 @@ import java.util.Objects;
  * no hay {@code setId()}, así que nadie fuera de la entidad puede alterar su identidad.
  * <p>
  * Dos entidades son iguales si son de la misma clase y tienen el mismo id, aunque sus demás datos difieran.
- * Contrato común (Integrante 1); cada integrante lo extiende en sus entidades.
+ * Cada entidad (Producto, Venta) la extiende.
  */
 public abstract class EntidadBase {
 
