@@ -21,7 +21,8 @@ import java.util.concurrent.atomic.AtomicReference;
  *   <li>Clase final y constructor privado con guarda: crear otra instancia por reflexión lanza
  *       {@link IllegalStateException}. No es Serializable, así que tampoco se duplica al deserializar.</li>
  *   <li>El estado es un {@link ParametrosTienda} inmutable dentro de un {@link AtomicReference}:
- *       {@link #actualizar} lo reemplaza de una vez y ningún hilo ve una mezcla de valores viejos y nuevos.</li>
+ *       {@link #actualizar} lo reemplaza de una vez y quien lee {@code getParametros()} nunca ve una mezcla de valores viejos y nuevos
+ *       (cada getter individual lee la foto vigente en ese momento).</li>
  * </ul>
  * Spring la publica como bean (ConfiguracionBeans) y los consumidores la reciben por sus interfaces
  * {@link ParametrosFiscales}, {@link FormatoRegional} y {@link DatosTienda}. Ver docs/decisiones/ADR-002.
