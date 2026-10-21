@@ -16,6 +16,8 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -130,6 +132,80 @@ class ConfiguracionGlobalTest {
         assertThatThrownBy(() -> configuracion.actualizar(null)).isInstanceOf(NullPointerException.class);
 
         assertThat(configuracion.getParametros()).isEqualTo(base);
+    }
+
+    @Test
+    void noExponeViasParaDuplicarse() {
+        assertThat(ConfiguracionGlobal.class.getConstructors()).isEmpty();
+        assertThat(Cloneable.class.isAssignableFrom(ConfiguracionGlobal.class)).isFalse();
+        assertThat(java.util.Arrays.stream(ConfiguracionGlobal.class.getDeclaredFields())
+                .allMatch(f -> Modifier.isPrivate(f.getModifiers()) && Modifier.isFinal(f.getModifiers()))).isTrue();
+    }
+
+    @Test
+    void lectoresConcurrentesNuncaVenUnaFotoMezclada() throws Exception {
+        ParametrosTienda a = ParametrosTienda.porDefecto();
+        ParametrosTienda b = a.conDatosEditables("Ferretería Los Andes S.A.C.", "20888888881", "Jr. Unión 456, Lima",
+                "999 888 777", new BigDecimal("0.10"), 8);
+        AtomicBoolean seguir = new AtomicBoolean(true);
+        AtomicInteger inconsistentes = new AtomicInteger();
+        AtomicInteger lecturas = new AtomicInteger();
+        ExecutorService ejecutor = Executors.newFixedThreadPool(5);
+        try {
+            ejecutor.submit(() -> {
+                for (int i = 0; i < 20_000; i++) {
+                    configuracion.actualizar(i % 2 == 0 ? b : a);
+                }
+                seguir.set(false);
+            });
+            for (int r = 0; r < 4; r++) {
+                ejecutor.submit(() -> {
+                    while (seguir.get()) {
+                        ParametrosTienda foto = configuracion.getParametros();
+                        lecturas.incrementAndGet();
+                        boolean esA = foto.ruc().equals(a.ruc()) && foto.tasaIgv().equals(a.tasaIgv())
+                                && foto.razonSocial().equals(a.razonSocial());
+                        boolean esB = foto.ruc().equals(b.ruc()) && foto.tasaIgv().equals(b.tasaIgv())
+                                && foto.razonSocial().equals(b.razonSocial());
+                        if (!esA && !esB) {
+                            inconsistentes.incrementAndGet();
+                        }
+                    }
+                });
+            }
+            ejecutor.shutdown();
+            assertThat(ejecutor.awaitTermination(20, TimeUnit.SECONDS)).isTrue();
+        } finally {
+            ejecutor.shutdownNow();
+        }
+
+        assertThat(lecturas.get()).isPositive();
+        assertThat(inconsistentes.get()).isZero();
+    }
+
+    @Test
+    void actualizarReemplazaLaFotoSinAlterarLaAnterior() {
+        ParametrosTienda antes = configuracion.getParametros();
+        ParametrosTienda nuevos = antes.conDatosEditables("Otra", "10123456789", "Cusco", "984111222",
+                new BigDecimal("0.10"), 9);
+
+        configuracion.actualizar(nuevos);
+
+        assertThat(antes).isEqualTo(ParametrosTienda.porDefecto());
+        assertThat(configuracion.getParametros()).isSameAs(nuevos);
+        assertThat(configuracion.getRuc()).isEqualTo("10123456789");
+    }
+
+    @Test
+    void formateaCeroMontosGrandesYRechazaNulos() {
+        assertThat(configuracion.formatearDinero(Dinero.cero(configuracion.getMoneda()))).isEqualTo("S/ 0.00");
+        assertThat(configuracion.formatearDinero(Dinero.de("1234567.891", configuracion.getMoneda())))
+                .isEqualTo("S/ 1,234,567.89");
+        assertThat(configuracion.formatearFechaHora(LocalDateTime.of(2024, 2, 29, 23, 59)))
+                .isEqualTo("29/02/2024 23:59");
+        assertThatThrownBy(() -> configuracion.formatearDinero(null)).isInstanceOf(NullPointerException.class);
+        assertThatThrownBy(() -> configuracion.formatearFecha(null)).isInstanceOf(NullPointerException.class);
+        assertThatThrownBy(() -> configuracion.formatearFechaHora(null)).isInstanceOf(NullPointerException.class);
     }
 
     @Test
