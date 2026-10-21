@@ -11,7 +11,8 @@
 
 <nav th:fragment="navbar(activo)" class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
     <div class="container">
-        <a class="navbar-brand fw-semibold" th:href="@{/}">Ferretería</a>
+        <a class="navbar-brand fw-semibold text-wrap" th:href="@{/}"
+           th:text="${tienda?.razonSocial} ?: 'Ferretería'">Ferretería</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menuPrincipal"
                 aria-controls="menuPrincipal" aria-expanded="false" aria-label="Mostrar menú">
             <span class="navbar-toggler-icon"></span>
@@ -27,7 +28,11 @@
                 <li class="nav-item"><a class="nav-link disabled" aria-disabled="true" title="Próximamente">Nueva venta</a></li>
                 <li class="nav-item"><a class="nav-link disabled" aria-disabled="true" title="Próximamente">Ventas</a></li>
                 <li class="nav-item"><a class="nav-link disabled" aria-disabled="true" title="Próximamente">Reportes</a></li>
-                <li class="nav-item"><a class="nav-link disabled" aria-disabled="true" title="Próximamente">Configuración</a></li>
+                <li class="nav-item">
+                    <a class="nav-link" th:classappend="${activo == 'configuracion'} ? 'active'"
+                       th:attr="aria-current=${activo == 'configuracion'} ? 'page' : null"
+                       th:href="@{/configuracion}">Configuración</a>
+                </li>
             </ul>
         </div>
     </div>
@@ -35,7 +40,13 @@
 
 <footer th:fragment="footer" class="border-top mt-5 py-3 small text-body-secondary">
     <div class="container d-flex flex-column flex-md-row justify-content-between gap-1">
-        <span>Gestor de ventas de ferretería</span>
+        <span th:if="${tienda != null}">
+            <strong th:text="${tienda.razonSocial}">Ferretería</strong>
+            &middot; RUC <span th:text="${tienda.ruc}">20999999991</span> (ficticio)
+            &middot; <span th:text="${tienda.direccion}">Dirección</span>
+            &middot; <span th:text="${tienda.telefono}">Teléfono</span>
+        </span>
+        <span th:unless="${tienda != null}">Gestor de ventas de ferretería</span>
         <span>Proyecto académico &middot; IDAT</span>
     </div>
 </footer>

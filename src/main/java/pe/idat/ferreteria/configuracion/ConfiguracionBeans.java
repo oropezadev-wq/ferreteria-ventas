@@ -21,6 +21,18 @@ public class ConfiguracionBeans {
         return Clock.system(ZONA_TIENDA);
     }
 
+    /**
+     * Publica el Singleton en el contexto. Los consumidores piden solo la interfaz que necesitan
+     * ({@link ParametrosFiscales}, {@link FormatoRegional} o {@link DatosTienda}) y Spring les entrega esta instancia.
+     * <p>
+     * Es un solo bean a propósito: con un {@code @Bean} por interfaz, Spring compara por la instancia real
+     * (que implementa las tres) y la inyección de cualquiera de ellas falla por ambigüedad (ver ADR-002).
+     */
+    @Bean
+    public ConfiguracionGlobal configuracionGlobal() {
+        return ConfiguracionGlobal.getInstancia();
+    }
+
     /** Datos generales que muestra Swagger UI en /swagger-ui.html. */
     @Bean
     public OpenAPI documentacion() {
