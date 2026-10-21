@@ -92,6 +92,12 @@ docs/                            decisiones (ADR), UML, capturas y sustentación
 | Decorator | `reportes.decorador` | Agregar sello, marca de agua y firma simulada sin cambiar el reporte base |
 | Facade | `reportes.fachada` | Un único método `generarReporte` que oculta todo el flujo anterior |
 
+El diseño detallado de cada patrón (clases, firmas y pruebas) está en [`docs/diseno.md`](docs/diseno.md).
+
+## Equipo y forma de trabajo
+
+Las tareas, responsables y fechas están en los *issues* del repositorio. Los pasos para clonar, crear una rama, hacer commits y abrir un Pull Request están en [`CONTRIBUTING.md`](CONTRIBUTING.md).
+
 ## Licencia
 
 [MIT](LICENSE)
