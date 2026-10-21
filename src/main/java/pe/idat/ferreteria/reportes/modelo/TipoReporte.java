@@ -1,6 +1,6 @@
 package pe.idat.ferreteria.reportes.modelo;
 
-/** Reportes que ofrece la aplicación; cada uno tiene una plantilla registrada en RegistroPlantillas (Integrante 2). */
+/** Reportes que ofrece la aplicación; cada uno tiene una plantilla registrada en RegistroPlantillas. */
 public enum TipoReporte {
 
     VENTAS_DIARIO("Ventas del día"),

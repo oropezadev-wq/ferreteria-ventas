@@ -142,4 +142,11 @@ class DineroTest {
         assertThat(Dinero.cero(PEN).esCero()).isTrue();
         assertThat(Dinero.cero(PEN).sumar(Dinero.de("1", PEN))).isEqualTo(Dinero.de("1.00", PEN));
     }
+
+    @Test
+    void atajoSolesUsaLaMonedaPeruana() {
+        assertThat(Dinero.soles("39.9")).isEqualTo(Dinero.de("39.90", PEN));
+        assertThat(Dinero.soles(new java.math.BigDecimal("10"))).isEqualTo(Dinero.de("10.00", PEN));
+        assertThat(Dinero.SOLES).isEqualTo(PEN);
+    }
 }

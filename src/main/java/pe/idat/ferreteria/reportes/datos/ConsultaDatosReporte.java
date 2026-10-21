@@ -1,28 +1,23 @@
 package pe.idat.ferreteria.reportes.datos;
 
-import pe.idat.ferreteria.reportes.modelo.Granularidad;
+import pe.idat.ferreteria.dominio.comun.Dinero;
 import pe.idat.ferreteria.reportes.modelo.Periodo;
 
 import java.util.List;
+import java.util.Map;
 
 /**
- * Única puerta por la que el módulo de reportes lee datos de ventas e inventario; así los ensambladores
- * no dependen de los repositorios ni de las entidades. Devuelve solo records de lectura.
- * <p>
- * La implementa Integrante 3 (con los repositorios de productos y ventas).
+ * Única puerta por la que los reportes leen datos de ventas e inventario. Así el Builder no depende de
+ * cómo se guardan las ventas ni los productos (principio de inversión de dependencias).
  */
 public interface ConsultaDatosReporte {
 
-    /**
-     * Totales de las ventas no anuladas del período y su serie por tramos.
-     *
-     * @param tramos tamaño de cada punto de la serie (DIA dentro de un mes, MES dentro de un año...)
-     */
-    ResumenVentas resumenVentas(Periodo periodo, Granularidad tramos);
+    /** Una fila por cada línea de venta del período, ordenadas por fecha. */
+    List<FilaVenta> ventasDelPeriodo(Periodo periodo);
 
-    /** Ventas no anuladas del período agrupadas por categoría de producto, de mayor a menor total. */
-    List<VentasPorCategoria> ventasPorCategoria(Periodo periodo);
+    /** Total vendido por categoría en el período (nombre de categoría → total), de mayor a menor. */
+    Map<String, Dinero> totalPorCategoria(Periodo periodo);
 
-    /** Stock actual de los productos activos valorizado a su costo unitario. */
-    InventarioValorizado inventarioValorizado();
+    /** Una fila por cada producto con su stock actual valorizado. */
+    List<FilaInventario> inventario();
 }
