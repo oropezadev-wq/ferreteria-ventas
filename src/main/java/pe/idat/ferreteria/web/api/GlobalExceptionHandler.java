@@ -3,6 +3,7 @@ package pe.idat.ferreteria.web.api;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.apache.tomcat.util.http.InvalidParameterException;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
@@ -55,6 +56,13 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<ErrorResponse> argumentoInvalido(IllegalArgumentException ex, HttpServletRequest req) {
         return responder(HttpStatus.BAD_REQUEST, ex.getMessage(), req, Map.of());
+    }
+
+    /** Parámetros que no se pudieron decodificar (no UTF-8 o un escape % inválido). */
+    @ExceptionHandler(InvalidParameterException.class)
+    public ResponseEntity<ErrorResponse> parametroMalCodificado(InvalidParameterException ex, HttpServletRequest req) {
+        return responder(HttpStatus.BAD_REQUEST, "Los datos enviados no tienen una codificación válida (UTF-8)",
+                req, Map.of());
     }
 
     /** Errores de @Valid: devuelve el mensaje de cada campo inválido. */
