@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragmentos/layout :: head('Productos')}"></head>
+<body class="d-flex flex-column min-vh-100">
+<nav th:replace="~{fragmentos/layout :: navbar('productos')}"></nav>
+
+<main class="container flex-grow-1">
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+        <h1 class="h3 mb-0">Productos</h1>
+        <a class="btn btn-primary" th:href="@{/productos/nuevo}">Nuevo producto</a>
+    </div>
+
+    <div th:if="${mensaje}" class="alert alert-success" role="status" th:text="${mensaje}">Guardado.</div>
+    <div th:if="${error}" class="alert alert-danger" role="alert" th:text="${error}">Error</div>
+
+    <div class="table-responsive">
+        <table class="table table-striped align-middle">
+            <thead>
+            <tr>
+                <th>Código</th>
+                <th>Producto</th>
+                <th>Categoría</th>
+                <th class="text-end">Precio</th>
+                <th class="text-end">Stock</th>
+                <th>Acciones</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="p : ${productos}">
+                <td th:text="${p.codigo}">HER-0001</td>
+                <td th:text="${p.nombre}">Martillo</td>
+                <td th:text="${p.categoria.nombre}">Herramientas</td>
+                <td class="text-end" th:text="${p.precio}">S/ 39.90</td>
+                <td class="text-end">
+                    <span th:text="${p.stock}">10</span>
+                    <span th:if="${p.estaBajoMinimo()}" class="badge text-bg-warning">bajo mínimo</span>
+                </td>
+                <td>
+                    <div class="d-flex flex-wrap gap-2">
+                        <a class="btn btn-sm btn-outline-secondary" th:href="@{/productos/{id}/editar(id=${p.id})}">Editar</a>
+                        <form th:action="@{/productos/{id}/reponer(id=${p.id})}" method="post" class="d-flex gap-1">
+                            <input type="number" name="cantidad" min="1" value="10" class="form-control form-control-sm"
+                                   style="width: 5rem" aria-label="Cantidad a reponer">
+                            <button type="submit" class="btn btn-sm btn-outline-primary">Reponer</button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(productos)}">
+                <td colspan="6" class="text-center text-body-secondary">No hay productos registrados.</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</main>
+
+<footer th:replace="~{fragmentos/layout :: footer}"></footer>
+<th:block th:replace="~{fragmentos/layout :: scripts}"></th:block>
+</body>
+</html>

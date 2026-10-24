@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="head(titulo)">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="${titulo} + ' | Ferretería'">Ferretería</title>
+    <link rel="stylesheet" th:href="@{/vendor/bootstrap/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+
+<nav th:fragment="navbar(activo)" class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+    <div class="container">
+        <a class="navbar-brand fw-semibold text-wrap" th:href="@{/}"
+           th:text="${tienda?.razonSocial} ?: 'Ferretería'">Ferretería</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menuPrincipal"
+                aria-controls="menuPrincipal" aria-expanded="false" aria-label="Mostrar menú">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="menuPrincipal">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link" th:classappend="${activo == 'inicio'} ? 'active'"
+                       th:attr="aria-current=${activo == 'inicio'} ? 'page' : null" th:href="@{/}">Inicio</a>
+                </li>
+                <!-- Pantallas pendientes: deshabilitadas hasta que exista su controlador -->
+                <li class="nav-item"><a class="nav-link disabled" aria-disabled="true" title="Próximamente">Productos</a></li>
+                <li class="nav-item"><a class="nav-link disabled" aria-disabled="true" title="Próximamente">Nueva venta</a></li>
+                <li class="nav-item"><a class="nav-link disabled" aria-disabled="true" title="Próximamente">Ventas</a></li>
+                <li class="nav-item"><a class="nav-link disabled" aria-disabled="true" title="Próximamente">Reportes</a></li>
+                <li class="nav-item">
+                    <a class="nav-link" th:classappend="${activo == 'configuracion'} ? 'active'"
+                       th:attr="aria-current=${activo == 'configuracion'} ? 'page' : null"
+                       th:href="@{/configuracion}">Configuración</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<footer th:fragment="footer" class="border-top mt-5 py-3 small text-body-secondary">
+    <div class="container d-flex flex-column flex-md-row justify-content-between gap-1">
+        <span th:if="${tienda != null}">
+            <strong th:text="${tienda.razonSocial}">Ferretería</strong>
+            &middot; RUC <span th:text="${tienda.ruc}">20999999991</span> (ficticio)
+            &middot; <span th:text="${tienda.direccion}">Dirección</span>
+            &middot; <span th:text="${tienda.telefono}">Teléfono</span>
+        </span>
+        <span th:unless="${tienda != null}">Gestor de ventas de ferretería</span>
+        <span>Proyecto académico &middot; IDAT</span>
+    </div>
+</footer>
+
+<th:block th:fragment="scripts">
+    <script th:src="@{/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
+</th:block>
+
+</body>
+</html>
