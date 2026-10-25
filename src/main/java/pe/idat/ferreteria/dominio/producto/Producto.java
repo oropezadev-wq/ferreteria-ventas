@@ -20,39 +20,71 @@ public class Producto extends EntidadBase {
     public Producto(Long id, String codigo, String nombre, CategoriaProducto categoria, Dinero precio, int stock,
                     int stockMinimo) {
         super(id);
-        // TODO (issue Productos): validar y asignar. Lanzar IllegalArgumentException con un mensaje claro si:
-        //  - codigo o nombre son null o vacíos (isBlank)
-        //  - categoria o precio son null
-        //  - stock o stockMinimo son negativos
-        // Luego asignar: this.codigo = codigo; this.nombre = nombre; ... (todos los campos)
-        throw new UnsupportedOperationException("Por implementar: constructor de Producto");
+        if (codigo == null || codigo.isBlank()) {
+            throw new IllegalArgumentException("El código del producto no puede ser nulo o vacío");
+        }
+        if (nombre == null || nombre.isBlank()) {
+            throw new IllegalArgumentException("El nombre del producto no puede ser nulo o vacío");
+        }
+        if (categoria == null) {
+            throw new IllegalArgumentException("La categoría del producto no puede ser nula");
+        }
+        if (precio == null) {
+            throw new IllegalArgumentException("El precio del producto no puede ser nulo");
+        }
+        if (stock < 0) {
+            throw new IllegalArgumentException("El stock inicial no puede ser negativo");
+        }
+        if (stockMinimo < 0) {
+            throw new IllegalArgumentException("El stock mínimo no puede ser negativo");
+        }
+
+        this.codigo = codigo;
+        this.nombre = nombre;
+        this.categoria = categoria;
+        this.precio = precio;
+        this.stock = stock;
+        this.stockMinimo = stockMinimo;
     }
 
     /** Resta unidades del stock al vender. */
     public void descontarStock(int cantidad) {
-        // TODO (issue Productos):
-        //  - si cantidad <= 0: IllegalArgumentException
-        //  - si cantidad > stock: new StockInsuficienteException("Stock insuficiente de " + nombre
-        //        + ": hay " + stock + " y se pidieron " + cantidad)
-        //  - si no: stock -= cantidad;
-        throw new UnsupportedOperationException("Por implementar: Producto.descontarStock");
+        if (cantidad <= 0) {
+            throw new IllegalArgumentException("La cantidad a descontar debe ser mayor a cero");
+        }
+        if (cantidad > stock) {
+            throw new StockInsuficienteException("Stock insuficiente de " + nombre + ": hay " + stock + " y se pidieron " + cantidad);
+        }
+        this.stock -= cantidad;
     }
 
     /** Suma unidades al stock cuando llega mercadería. */
     public void reponerStock(int cantidad) {
-        // TODO (issue Productos): si cantidad <= 0, IllegalArgumentException; si no, stock += cantidad;
-        throw new UnsupportedOperationException("Por implementar: Producto.reponerStock");
+        if (cantidad <= 0) {
+            throw new IllegalArgumentException("La cantidad a reponer debe ser mayor a cero");
+        }
+        this.stock += cantidad;
     }
 
     /** Cambia los datos editables desde la pantalla "Editar producto" (el código y la categoría no cambian). */
     public void actualizar(String nuevoNombre, Dinero nuevoPrecio, int nuevoStockMinimo) {
-        // TODO (issue Productos): mismas validaciones del constructor para estos tres datos, y asignarlos.
-        throw new UnsupportedOperationException("Por implementar: Producto.actualizar");
+        if (nuevoNombre == null || nuevoNombre.isBlank()) {
+            throw new IllegalArgumentException("El nuevo nombre no puede ser nulo o vacío");
+        }
+        if (nuevoPrecio == null) {
+            throw new IllegalArgumentException("El nuevo precio no puede ser nulo");
+        }
+        if (nuevoStockMinimo < 0) {
+            throw new IllegalArgumentException("El nuevo stock mínimo no puede ser negativo");
+        }
+
+        this.nombre = nuevoNombre;
+        this.precio = nuevoPrecio;
+        this.stockMinimo = nuevoStockMinimo;
     }
 
     public boolean estaBajoMinimo() {
-        // TODO (issue Productos): true si el stock es menor o igual al stock mínimo.
-        throw new UnsupportedOperationException("Por implementar: Producto.estaBajoMinimo");
+        return this.stock <= this.stockMinimo;
     }
 
     public String getCodigo() {
@@ -77,5 +109,12 @@ public class Producto extends EntidadBase {
 
     public int getStockMinimo() {
         return stockMinimo;
+    }
+
+    /** Excepción interna para manejar la falta de stock sin crear archivos externos. */
+    public static class StockInsuficienteException extends RuntimeException {
+        public StockInsuficienteException(String mensaje) {
+            super(mensaje);
+        }
     }
 }
