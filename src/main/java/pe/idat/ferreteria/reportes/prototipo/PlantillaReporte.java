@@ -8,6 +8,7 @@ import java.util.List;
 
 /**
  * Patrón Prototype: plantilla base de un reporte (título, período y qué secciones lleva).
+ *
  * <p>
  * En vez de crear cada plantilla desde cero, se arma una base y las demás se obtienen clonándola con
  * {@link #copiar()} y ajustando lo que cambia. La copia es PROFUNDA: modificar la copia nunca altera el original.
@@ -32,34 +33,43 @@ public final class PlantillaReporte implements Prototipo<PlantillaReporte> {
 
     /** Constructor copia: es la base de la copia profunda. Solo lo usa {@link #copiar()}. */
     private PlantillaReporte(PlantillaReporte original) {
-        // TODO (issue Prototype):
-        //  - copiar titulo y granularidad del original;
-        //  - para secciones crear una LISTA NUEVA: this.secciones = new ArrayList<>(original.secciones);
-        //    Si se usara la misma lista (this.secciones = original.secciones) la copia sería SUPERFICIAL:
-        //    agregar una sección a la copia también la agregaría al original. Eso es lo que la rúbrica castiga.
-        throw new UnsupportedOperationException("Por implementar: constructor copia de PlantillaReporte");
+        this.titulo = original.titulo;
+        this.granularidad = original.granularidad;
+        // Copia profunda: se crea una lista nueva para que no compartan la misma referencia en memoria
+        this.secciones = new ArrayList<>(original.secciones);
     }
 
     @Override
     public PlantillaReporte copiar() {
-        // TODO (issue Prototype): return new PlantillaReporte(this);
-        throw new UnsupportedOperationException("Por implementar: PlantillaReporte.copiar");
+        return new PlantillaReporte(this);
     }
 
     /** Cambia el título. Devuelve la propia plantilla para encadenar: {@code base.copiar().renombrar("...")}. */
     public PlantillaReporte renombrar(String nuevoTitulo) {
-        // TODO (issue Prototype): validar que no sea null ni vacío (IllegalArgumentException), asignar y return this.
-        throw new UnsupportedOperationException("Por implementar: PlantillaReporte.renombrar");
+        if (nuevoTitulo == null || nuevoTitulo.isBlank()) {
+            throw new IllegalArgumentException("El nuevo título no puede ser nulo o vacío");
+        }
+        this.titulo = nuevoTitulo;
+        return this;
     }
 
     public PlantillaReporte conGranularidad(Granularidad nueva) {
-        // TODO (issue Prototype): validar que no sea null, asignar y return this.
-        throw new UnsupportedOperationException("Por implementar: PlantillaReporte.conGranularidad");
+        if (nueva == null) {
+            throw new IllegalArgumentException("La nueva granularidad no puede ser nula");
+        }
+        this.granularidad = nueva;
+        return this;
     }
 
     public PlantillaReporte agregarSeccion(SeccionPlantilla seccion) {
-        // TODO (issue Prototype): validar que no sea null y que no esté repetida; agregarla a la lista; return this.
-        throw new UnsupportedOperationException("Por implementar: PlantillaReporte.agregarSeccion");
+        if (seccion == null) {
+            throw new IllegalArgumentException("La sección no puede ser nula");
+        }
+        if (this.secciones.contains(seccion)) {
+            throw new IllegalArgumentException("La sección ya se encuentra agregada en la plantilla");
+        }
+        this.secciones.add(seccion);
+        return this;
     }
 
     public String getTitulo() {
