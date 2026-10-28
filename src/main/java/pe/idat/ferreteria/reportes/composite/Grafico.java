@@ -1,6 +1,7 @@
 package pe.idat.ferreteria.reportes.composite;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -36,25 +37,29 @@ public final class Grafico extends ElementoReporte {
 
     @Override
     public String renderizarHtml() {
-        // TODO (issue Composite): armar
-        //   <div class="grafico"><h3>titulo</h3>
-        //     <div class="barra" style="width: NN%">etiqueta: valor</div>   (una por cada entrada del mapa)
-        //   </div>
-        // NN = valor * 100 / (el valor más grande del mapa), redondeado a entero. Si el mapa está vacío,
-        // mostrar solo el título y un <p>Sin datos</p>. Escapar título y etiquetas con Html.escapar(...).
-        throw new UnsupportedOperationException("Por implementar: Grafico.renderizarHtml");
+        StringBuilder html = new StringBuilder("<div class=\"grafico\"><h3>")
+                .append(Html.escapar(titulo)).append("</h3>");
+        if (valores.isEmpty()) {
+            return html.append("<p>Sin datos</p></div>").toString();
+        }
+        BigDecimal maximo = valores.values().stream().max(BigDecimal::compareTo).orElse(BigDecimal.ZERO);
+        for (Map.Entry<String, BigDecimal> entrada : valores.entrySet()) {
+            int ancho = maximo.signum() == 0 ? 0 : entrada.getValue().multiply(BigDecimal.valueOf(100))
+                    .divide(maximo, 0, RoundingMode.HALF_UP).intValue();
+            html.append("<div class=\"barra\" style=\"width: ").append(ancho).append("%\">")
+                    .append(Html.escapar(entrada.getKey())).append(": ")
+                    .append(entrada.getValue().toPlainString()).append("</div>");
+        }
+        return html.append("</div>").toString();
     }
 
     @Override
     public int contarElementos() {
-        // TODO (issue Composite): un gráfico es una hoja.
-        throw new UnsupportedOperationException("Por implementar: Grafico.contarElementos");
+        return 1;
     }
 
     @Override
     public Grafico copiar() {
-        // TODO (issue Composite): crear otro Grafico con el mismo título y valores
-        // (el constructor ya copia el mapa).
-        throw new UnsupportedOperationException("Por implementar: Grafico.copiar");
+        return new Grafico(titulo, valores);
     }
 }

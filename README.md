@@ -4,7 +4,7 @@ Aplicación web en Java y Spring Boot para una ferretería: inventario de produc
 
 Proyecto del curso **Patrones de Diseño de Software** (IDAT). La tienda "Ferretería El Constructor S.A.C." y su RUC son ficticios.
 
-> Estado: base del proyecto. Las pantallas de productos, ventas y reportes están en desarrollo; en el menú aparecen deshabilitadas hasta que existan.
+> Estado: las pantallas de productos, ventas y reportes están habilitadas. Al iniciar se cargan productos y ventas de ejemplo en memoria.
 
 ## Stack
 
@@ -81,7 +81,7 @@ src/test/java/...                pruebas con la misma estructura de paquetes
 docs/                            decisiones (ADR), UML, capturas y sustentación
 ```
 
-## Patrones planificados
+## Patrones implementados
 
 | Patrón | Dónde | Para qué |
 |---|---|---|

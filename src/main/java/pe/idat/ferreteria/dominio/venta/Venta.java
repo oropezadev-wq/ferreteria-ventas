@@ -5,6 +5,7 @@ import pe.idat.ferreteria.dominio.comun.EntidadBase;
 import pe.idat.ferreteria.dominio.venta.pago.Pago;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -21,31 +22,36 @@ public class Venta extends EntidadBase {
 
     public Venta(Long id, LocalDateTime fechaHora, List<LineaVenta> lineas, Pago pago) {
         super(id);
-        // TODO (issue Ventas):
-        //  1. Si fechaHora o pago son null, o lineas es null o vacía: IllegalArgumentException.
-        //  2. this.numero = String.format("V-%06d", id);   // por ejemplo V-000012
-        //  3. this.fechaHora = fechaHora;  this.lineas = List.copyOf(lineas);  this.pago = pago;
-        //  4. pago.validar(getTotal());   // el pago debe cubrir el total (lo valida cada tipo de pago)
-        throw new UnsupportedOperationException("Por implementar: constructor de Venta");
+        if (fechaHora == null || pago == null || lineas == null || lineas.isEmpty()) {
+            throw new IllegalArgumentException("La venta necesita fecha, líneas y pago");
+        }
+        this.numero = String.format("V-%06d", id);
+        this.fechaHora = fechaHora;
+        this.lineas = List.copyOf(lineas);
+        this.pago = pago;
+        pago.validar(getTotal());
     }
 
     public Dinero getTotal() {
-        // TODO (issue Ventas): sumar el subtotal() de cada línea, empezando en Dinero.soles("0").
-        throw new UnsupportedOperationException("Por implementar: Venta.getTotal");
+        Dinero total = Dinero.soles("0");
+        for (LineaVenta linea : lineas) {
+            total = total.sumar(linea.subtotal());
+        }
+        return total;
     }
 
     /** Parte del total sin IGV: total / (1 + tasa). Con tasa 0.18 y total 118.00 da 100.00. */
     public Dinero getOpGravada(BigDecimal tasaIgv) {
-        // TODO (issue Ventas):
-        //   BigDecimal divisor = BigDecimal.ONE.add(tasaIgv);
-        //   return Dinero.soles(getTotal().monto().divide(divisor, 2, RoundingMode.HALF_UP));
-        throw new UnsupportedOperationException("Por implementar: Venta.getOpGravada");
+        if (tasaIgv == null || tasaIgv.signum() < 0) {
+            throw new IllegalArgumentException("La tasa de IGV debe ser no negativa");
+        }
+        BigDecimal divisor = BigDecimal.ONE.add(tasaIgv);
+        return Dinero.soles(getTotal().monto().divide(divisor, 2, RoundingMode.HALF_UP));
     }
 
     /** IGV incluido en el total: total - opGravada (así la suma cuadra al céntimo). */
     public Dinero getIgv(BigDecimal tasaIgv) {
-        // TODO (issue Ventas): return getTotal().restar(getOpGravada(tasaIgv));
-        throw new UnsupportedOperationException("Por implementar: Venta.getIgv");
+        return getTotal().restar(getOpGravada(tasaIgv));
     }
 
     public String getNumero() {

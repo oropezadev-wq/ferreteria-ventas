@@ -2,12 +2,22 @@ package pe.idat.ferreteria.aplicacion;
 
 import org.springframework.stereotype.Service;
 import pe.idat.ferreteria.dominio.producto.ProductoRepositorio;
+import pe.idat.ferreteria.dominio.producto.Producto;
+import pe.idat.ferreteria.dominio.comun.RecursoNoEncontradoException;
+import pe.idat.ferreteria.dominio.comun.ReglaNegocioException;
+import pe.idat.ferreteria.dominio.comun.StockInsuficienteException;
+import pe.idat.ferreteria.dominio.venta.LineaVenta;
 import pe.idat.ferreteria.dominio.venta.Venta;
 import pe.idat.ferreteria.dominio.venta.VentaRepositorio;
 import pe.idat.ferreteria.dominio.venta.pago.Pago;
 
 import java.time.Clock;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class VentaServiceImpl implements VentaService {
@@ -25,28 +35,42 @@ public class VentaServiceImpl implements VentaService {
     /** synchronized: dos ventas a la vez no pueden descontar el mismo stock. */
     @Override
     public synchronized Venta registrar(List<ItemVenta> items, Pago pago) {
-        // TODO (issue Ventas), en este orden:
-        //  1. Si items es null o vacío: new ReglaNegocioException("La venta necesita al menos un producto").
-        //  2. Por cada item: buscar el producto (si no existe, RecursoNoEncontradoException) y comprobar que
-        //     producto.getStock() >= item.cantidad(); si no alcanza, StockInsuficienteException.
-        //     ¡Todavía NO descontar! Primero se revisan todos.
-        //  3. Armar la lista de LineaVenta con los datos de cada producto (id, nombre, categoría, precio, cantidad).
-        //  4. Venta venta = new Venta(ventas.siguienteId(), LocalDateTime.now(reloj), lineas, pago);
-        //     (el constructor valida el pago: si no alcanza, lanza excepción y no se descontó nada)
-        //  5. Recién ahora: producto.descontarStock(cantidad) y productos.guardar(producto) por cada item.
-        //  6. return ventas.guardar(venta);
-        throw new UnsupportedOperationException("Por implementar: VentaServiceImpl.registrar");
+        if (items == null || items.isEmpty()) {
+            throw new ReglaNegocioException("La venta necesita al menos un producto");
+        }
+        Map<Long, Integer> cantidades = new LinkedHashMap<>();
+        List<LineaVenta> lineas = new ArrayList<>();
+        for (ItemVenta item : items) {
+            if (item == null || item.productoId() == null || item.cantidad() <= 0) {
+                throw new IllegalArgumentException("Cada producto necesita una cantidad positiva");
+            }
+            Producto producto = productos.buscarPorId(item.productoId())
+                    .orElseThrow(() -> new RecursoNoEncontradoException("Producto", item.productoId()));
+            cantidades.merge(item.productoId(), item.cantidad(), Math::addExact);
+            if (producto.getStock() < cantidades.get(item.productoId())) {
+                throw new StockInsuficienteException("Stock insuficiente de " + producto.getNombre());
+            }
+            lineas.add(new LineaVenta(producto.getId(), producto.getNombre(), producto.getCategoria(),
+                    producto.getPrecio(), item.cantidad()));
+        }
+        Venta venta = new Venta(ventas.siguienteId(), LocalDateTime.now(reloj), lineas, pago);
+        for (Map.Entry<Long, Integer> entrada : cantidades.entrySet()) {
+            Producto producto = productos.buscarPorId(entrada.getKey()).orElseThrow();
+            producto.descontarStock(entrada.getValue());
+            productos.guardar(producto);
+        }
+        return ventas.guardar(venta);
     }
 
     @Override
     public List<Venta> listar() {
-        // TODO (issue Ventas): ventas.listar() ordenada por fecha, de la más reciente a la más antigua.
-        throw new UnsupportedOperationException("Por implementar: VentaServiceImpl.listar");
+        return ventas.listar().stream()
+                .sorted(Comparator.comparing(Venta::getFechaHora).reversed())
+                .toList();
     }
 
     @Override
     public Venta buscar(Long id) {
-        // TODO (issue Ventas): igual que ProductoServiceImpl.buscar, con "Venta".
-        throw new UnsupportedOperationException("Por implementar: VentaServiceImpl.buscar");
+        return ventas.buscarPorId(id).orElseThrow(() -> new RecursoNoEncontradoException("Venta", id));
     }
 }

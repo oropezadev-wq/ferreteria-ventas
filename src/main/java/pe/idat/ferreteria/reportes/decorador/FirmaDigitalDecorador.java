@@ -1,6 +1,10 @@
 package pe.idat.ferreteria.reportes.decorador;
 
 import pe.idat.ferreteria.reportes.modelo.Reporte;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.HexFormat;
 
 /**
  * Decorador que agrega una huella SHA-256 del contenido del reporte (firma digital SIMULADA).
@@ -17,19 +21,18 @@ public final class FirmaDigitalDecorador extends DecoradorReporte {
 
     /** Huella SHA-256 del HTML del reporte envuelto, en hexadecimal (64 caracteres). */
     public String getHuella() {
-        // TODO (issue Decorator):
-        //   byte[] bytes = MessageDigest.getInstance("SHA-256")
-        //           .digest(getEnvuelto().getHtml().getBytes(StandardCharsets.UTF_8));
-        //   return HexFormat.of().formatHex(bytes);
-        // MessageDigest.getInstance lanza NoSuchAlgorithmException (excepción comprobada): capturarla con
-        // try/catch y relanzarla como new IllegalStateException("SHA-256 no disponible", e).
-        throw new UnsupportedOperationException("Por implementar: FirmaDigitalDecorador.getHuella");
+        try {
+            byte[] bytes = MessageDigest.getInstance("SHA-256")
+                    .digest(getEnvuelto().getHtml().getBytes(StandardCharsets.UTF_8));
+            return HexFormat.of().formatHex(bytes);
+        } catch (NoSuchAlgorithmException e) {
+            throw new IllegalStateException("SHA-256 no disponible", e);
+        }
     }
 
     @Override
     public String getHtml() {
-        // TODO (issue Decorator): getEnvuelto().getHtml()
-        //   + "<p class=\"firma\">Huella SHA-256 (firma simulada): " + getHuella() + "</p>"
-        throw new UnsupportedOperationException("Por implementar: FirmaDigitalDecorador.getHtml");
+        return getEnvuelto().getHtml()
+                + "<p class=\"firma\">Huella SHA-256 (firma simulada): " + getHuella() + "</p>";
     }
 }

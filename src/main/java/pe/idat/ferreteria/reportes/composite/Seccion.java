@@ -30,34 +30,37 @@ public final class Seccion extends ElementoReporte {
 
     /** Agrega una pieza dentro de esta sección. Devuelve la propia sección para poder encadenar llamadas. */
     public Seccion agregar(ElementoReporte hijo) {
-        // TODO (issue Composite):
-        //  1. Si hijo es null, o es esta misma sección (hijo == this), lanzar IllegalArgumentException.
-        //  2. Agregarlo a la lista hijos.
-        //  3. return this;
-        throw new UnsupportedOperationException("Por implementar: Seccion.agregar");
+        if (hijo == null || hijo == this) {
+            throw new IllegalArgumentException("La pieza debe existir y no puede contenerse a sí misma");
+        }
+        hijos.add(hijo);
+        return this;
     }
 
     @Override
     public String renderizarHtml() {
-        // TODO (issue Composite): devolver
-        //   "<section><h2>" + Html.escapar(titulo) + "</h2>" + (HTML de cada hijo) + "</section>"
-        // Recorrer hijos con un for y llamar hijo.renderizarHtml(): no importa si el hijo es hoja o sección.
-        // Tip: usar un StringBuilder para ir juntando el texto.
-        throw new UnsupportedOperationException("Por implementar: Seccion.renderizarHtml");
+        StringBuilder html = new StringBuilder("<section><h2>").append(Html.escapar(titulo)).append("</h2>");
+        for (ElementoReporte hijo : hijos) {
+            html.append(hijo.renderizarHtml());
+        }
+        return html.append("</section>").toString();
     }
 
     @Override
     public int contarElementos() {
-        // TODO (issue Composite): 1 (esta sección) + la suma de hijo.contarElementos() de cada hijo.
-        throw new UnsupportedOperationException("Por implementar: Seccion.contarElementos");
+        int total = 1;
+        for (ElementoReporte hijo : hijos) {
+            total += hijo.contarElementos();
+        }
+        return total;
     }
 
     @Override
     public Seccion copiar() {
-        // TODO (issue Composite): copia PROFUNDA.
-        //   Seccion copia = new Seccion(titulo);
-        //   por cada hijo: copia.agregar(hijo.copiar());   <- copiar el hijo, no agregar el mismo objeto
-        //   return copia;
-        throw new UnsupportedOperationException("Por implementar: Seccion.copiar");
+        Seccion copia = new Seccion(titulo);
+        for (ElementoReporte hijo : hijos) {
+            copia.agregar(hijo.copiar());
+        }
+        return copia;
     }
 }

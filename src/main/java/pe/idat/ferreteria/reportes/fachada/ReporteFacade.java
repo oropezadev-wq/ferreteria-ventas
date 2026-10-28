@@ -4,6 +4,11 @@ import org.springframework.stereotype.Service;
 import pe.idat.ferreteria.configuracion.DatosTienda;
 import pe.idat.ferreteria.reportes.builder.DirectorReporte;
 import pe.idat.ferreteria.reportes.prototipo.RegistroPlantillas;
+import pe.idat.ferreteria.reportes.prototipo.PlantillaReporte;
+import pe.idat.ferreteria.reportes.modelo.Reporte;
+import pe.idat.ferreteria.reportes.decorador.SelloFerreteriaDecorador;
+import pe.idat.ferreteria.reportes.decorador.MarcaAguaDecorador;
+import pe.idat.ferreteria.reportes.decorador.FirmaDigitalDecorador;
 
 /**
  * Patrón Facade: un único método, {@link #generarReporte}, esconde todo el proceso. Quien lo usa
@@ -23,17 +28,23 @@ public class ReporteFacade {
     }
 
     public ReporteGenerado generarReporte(SolicitudReporte solicitud) {
-        // TODO (issue Facade):
-        //  1. Prototype:  PlantillaReporte plantilla = plantillas.obtener(solicitud.tipo());
-        //  2. Builder + Composite:  Reporte reporte = director.construir(plantilla, solicitud.fecha());
-        //  3. Decorator, en este orden (la firma al final para que cubra todo):
-        //       if (solicitud.conSello())     reporte = new SelloFerreteriaDecorador(reporte, tienda);
-        //       if (solicitud.conMarcaAgua()) reporte = new MarcaAguaDecorador(reporte, solicitud.marcaAgua());
-        //       String huella = null;
-        //       if (solicitud.conFirma()) { FirmaDigitalDecorador firma = new FirmaDigitalDecorador(reporte);
-        //                                   huella = firma.getHuella(); reporte = firma; }
-        //  4. return new ReporteGenerado(reporte.getTitulo(), reporte.getHtml(), huella);
-        // El Singleton (ConfiguracionGlobal) llega como DatosTienda y como FormatoRegional en el director.
-        throw new UnsupportedOperationException("Por implementar: ReporteFacade.generarReporte");
+        if (solicitud == null) {
+            throw new IllegalArgumentException("La solicitud es obligatoria");
+        }
+        PlantillaReporte plantilla = plantillas.obtener(solicitud.tipo());
+        Reporte reporte = director.construir(plantilla, solicitud.fecha());
+        if (solicitud.conSello()) {
+            reporte = new SelloFerreteriaDecorador(reporte, tienda);
+        }
+        if (solicitud.conMarcaAgua()) {
+            reporte = new MarcaAguaDecorador(reporte, solicitud.marcaAgua());
+        }
+        String huella = null;
+        if (solicitud.conFirma()) {
+            FirmaDigitalDecorador firma = new FirmaDigitalDecorador(reporte);
+            huella = firma.getHuella();
+            reporte = firma;
+        }
+        return new ReporteGenerado(reporte.getTitulo(), reporte.getHtml(), huella);
     }
 }

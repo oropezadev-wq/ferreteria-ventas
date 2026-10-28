@@ -30,23 +30,28 @@ public final class Tabla extends ElementoReporte {
 
     @Override
     public String renderizarHtml() {
-        // TODO (issue Composite): armar
-        //   <table class="table table-sm"><thead><tr><th>Encabezado</th>...</tr></thead>
-        //   <tbody><tr><td>celda</td>...</tr>...</tbody></table>
-        // Cada encabezado y cada celda pasan por Html.escapar(...). Seguir el ejemplo de Parrafo.
-        throw new UnsupportedOperationException("Por implementar: Tabla.renderizarHtml");
+        StringBuilder html = new StringBuilder("<table class=\"table table-sm\"><thead><tr>");
+        for (String encabezado : encabezados) {
+            html.append("<th>").append(Html.escapar(encabezado)).append("</th>");
+        }
+        html.append("</tr></thead><tbody>");
+        for (List<String> fila : filas) {
+            html.append("<tr>");
+            for (String celda : fila) {
+                html.append("<td>").append(Html.escapar(celda)).append("</td>");
+            }
+            html.append("</tr>");
+        }
+        return html.append("</tbody></table>").toString();
     }
 
     @Override
     public int contarElementos() {
-        // TODO (issue Composite): una tabla es una hoja.
-        throw new UnsupportedOperationException("Por implementar: Tabla.contarElementos");
+        return 1;
     }
 
     @Override
     public Tabla copiar() {
-        // TODO (issue Composite): crear otra Tabla con los mismos encabezados y filas
-        // (el constructor ya hace copias de las listas).
-        throw new UnsupportedOperationException("Por implementar: Tabla.copiar");
+        return new Tabla(encabezados, filas);
     }
 }

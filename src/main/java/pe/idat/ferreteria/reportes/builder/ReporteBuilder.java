@@ -1,6 +1,9 @@
 package pe.idat.ferreteria.reportes.builder;
 
 import pe.idat.ferreteria.reportes.composite.Seccion;
+import pe.idat.ferreteria.reportes.composite.Parrafo;
+import pe.idat.ferreteria.reportes.composite.Tabla;
+import pe.idat.ferreteria.reportes.composite.Grafico;
 import pe.idat.ferreteria.reportes.modelo.Reporte;
 import pe.idat.ferreteria.reportes.modelo.ReporteBase;
 
@@ -45,46 +48,45 @@ public final class ReporteBuilder {
     }
 
     public ReporteBuilder subtitulo(String texto) {
-        // TODO (issue Builder): guardar el texto (si es null, dejar "") y return this.
-        throw new UnsupportedOperationException("Por implementar: ReporteBuilder.subtitulo");
+        subtitulo = texto == null ? "" : texto;
+        return this;
     }
 
     public ReporteBuilder seccion(String tituloSeccion) {
-        // TODO (issue Builder):
-        //   Seccion nueva = new Seccion(tituloSeccion);
-        //   abiertas.peek().agregar(nueva);   // la nueva queda dentro de la sección actual
-        //   abiertas.push(nueva);             // y pasa a ser la sección actual
-        //   return this;
-        throw new UnsupportedOperationException("Por implementar: ReporteBuilder.seccion");
+        Seccion nueva = new Seccion(tituloSeccion);
+        abiertas.peek().agregar(nueva);
+        abiertas.push(nueva);
+        return this;
     }
 
     public ReporteBuilder finSeccion() {
-        // TODO (issue Builder): si solo queda la raíz (abiertas.size() == 1), lanzar
-        //   new IllegalStateException("No hay ninguna sección abierta para cerrar");
-        // si no, abiertas.pop() y return this.
-        throw new UnsupportedOperationException("Por implementar: ReporteBuilder.finSeccion");
+        if (abiertas.size() == 1) {
+            throw new IllegalStateException("No hay ninguna sección abierta para cerrar");
+        }
+        abiertas.pop();
+        return this;
     }
 
     public ReporteBuilder parrafo(String texto) {
-        // TODO (issue Builder): abiertas.peek().agregar(new Parrafo(texto)); return this;
-        throw new UnsupportedOperationException("Por implementar: ReporteBuilder.parrafo");
+        abiertas.peek().agregar(new Parrafo(texto));
+        return this;
     }
 
     public ReporteBuilder tabla(List<String> encabezados, List<List<String>> filas) {
-        // TODO (issue Builder): igual que parrafo, con new Tabla(encabezados, filas).
-        throw new UnsupportedOperationException("Por implementar: ReporteBuilder.tabla");
+        abiertas.peek().agregar(new Tabla(encabezados, filas));
+        return this;
     }
 
     public ReporteBuilder grafico(String tituloGrafico, Map<String, BigDecimal> valores) {
-        // TODO (issue Builder): igual que parrafo, con new Grafico(tituloGrafico, valores).
-        throw new UnsupportedOperationException("Por implementar: ReporteBuilder.grafico");
+        abiertas.peek().agregar(new Grafico(tituloGrafico, valores));
+        return this;
     }
 
     /** Entrega el reporte terminado. */
     public Reporte build() {
-        // TODO (issue Builder): si quedan secciones abiertas (abiertas.size() > 1), lanzar
-        //   new IllegalStateException("Hay secciones sin cerrar");
-        // si no: return new ReporteBase(titulo, subtitulo, raiz);
-        throw new UnsupportedOperationException("Por implementar: ReporteBuilder.build");
+        if (abiertas.size() > 1) {
+            throw new IllegalStateException("Hay secciones sin cerrar");
+        }
+        return new ReporteBase(titulo, subtitulo, raiz);
     }
 }

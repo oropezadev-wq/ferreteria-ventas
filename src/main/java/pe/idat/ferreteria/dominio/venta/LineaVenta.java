@@ -11,12 +11,13 @@ public record LineaVenta(Long productoId, String producto, CategoriaProducto cat
                          int cantidad) {
 
     public LineaVenta {
-        // TODO (issue Ventas): lanzar IllegalArgumentException si productoId, producto, categoria o
-        // precioUnitario son null, o si cantidad <= 0.
+        if (productoId == null || producto == null || producto.isBlank() || categoria == null
+                || precioUnitario == null || cantidad <= 0) {
+            throw new IllegalArgumentException("La línea de venta necesita producto, categoría, precio y cantidad válida");
+        }
     }
 
     public Dinero subtotal() {
-        // TODO (issue Ventas): return precioUnitario.multiplicar(cantidad);
-        throw new UnsupportedOperationException("Por implementar: LineaVenta.subtotal");
+        return precioUnitario.multiplicar(cantidad);
     }
 }
