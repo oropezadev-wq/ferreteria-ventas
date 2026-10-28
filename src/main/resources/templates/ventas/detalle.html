@@ -23,16 +23,16 @@
                 <tr th:each="l : ${venta.lineas}">
                     <td th:text="${l.producto}">Martillo</td>
                     <td class="text-end" th:text="${l.cantidad}">1</td>
-                    <td class="text-end" th:text="${l.precioUnitario}">S/ 39.90</td>
-                    <td class="text-end" th:text="${l.subtotal()}">S/ 39.90</td>
+                    <td class="text-end" th:text="'S/ ' + ${l.precioUnitario}">S/ 39.90</td>
+                    <td class="text-end" th:text="'S/ ' + ${l.subtotal}">S/ 39.90</td>
                 </tr>
                 </tbody>
             </table>
 
             <dl class="row mb-2 small">
-                <dt class="col-7 text-end">Op. gravada</dt><dd class="col-5 text-end mb-0" th:text="${opGravada}">S/ 33.81</dd>
-                <dt class="col-7 text-end">IGV</dt><dd class="col-5 text-end mb-0" th:text="${igv}">S/ 6.09</dd>
-                <dt class="col-7 text-end fs-6">Total</dt><dd class="col-5 text-end mb-0 fs-6 fw-bold" th:text="${venta.total}">S/ 39.90</dd>
+                <dt class="col-7 text-end">Op. gravada</dt><dd class="col-5 text-end mb-0" th:text="'S/ ' + ${venta.opGravada}">S/ 33.81</dd>
+                <dt class="col-7 text-end">IGV</dt><dd class="col-5 text-end mb-0" th:text="'S/ ' + ${venta.igv}">S/ 6.09</dd>
+                <dt class="col-7 text-end fs-6">Total</dt><dd class="col-5 text-end mb-0 fs-6 fw-bold" th:text="'S/ ' + ${venta.total}">S/ 39.90</dd>
             </dl>
             <p class="small mb-0" th:text="${venta.pago.descripcion(venta.total)}">Efectivo</p>
             <p class="small text-body-secondary mt-2 mb-0">Ticket interno, no es comprobante de pago.</p>

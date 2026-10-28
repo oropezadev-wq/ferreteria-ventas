@@ -6,56 +6,31 @@
 
 <main class="container flex-grow-1">
     <h1 class="h3 mb-3">Configuración de la tienda</h1>
+    <p class="text-body-secondary small">Estos datos se guardan en un solo objeto (Singleton) y los usan el menú, los tickets y los reportes.</p>
 
     <div th:if="${mensaje}" class="alert alert-success" role="status" th:text="${mensaje}">Configuración guardada.</div>
+    <div th:if="${error}" class="alert alert-danger" role="alert" th:text="${error}">Error</div>
 
-    <form th:action="@{/configuracion}" th:object="${formulario}" method="post" class="row g-3">
-        <div th:if="${#fields.hasGlobalErrors()}" class="col-12">
-            <div class="alert alert-danger" role="alert">
-                <p class="mb-0" th:each="e : ${#fields.globalErrors()}" th:text="${e}">Error</p>
-            </div>
-        </div>
-
+    <form th:action="@{/configuracion}" method="post" class="row g-3">
         <div class="col-12 col-md-8">
             <label for="razonSocial" class="form-label">Razón social</label>
-            <input type="text" class="form-control" th:field="*{razonSocial}" th:errorclass="is-invalid" maxlength="100">
-            <div class="invalid-feedback" th:errors="*{razonSocial}">Error</div>
+            <input type="text" class="form-control" id="razonSocial" name="razonSocial" th:value="${tienda.razonSocial}" maxlength="100" required>
         </div>
         <div class="col-12 col-md-4">
-            <label for="ruc" class="form-label">RUC <span class="badge text-bg-secondary">ficticio</span></label>
-            <input type="text" class="form-control" th:field="*{ruc}" th:errorclass="is-invalid"
-                   inputmode="numeric" maxlength="11">
-            <div class="invalid-feedback" th:errors="*{ruc}">Error</div>
+            <label for="ruc" class="form-label">RUC</label>
+            <input type="text" class="form-control" id="ruc" name="ruc" th:value="${tienda.ruc}" inputmode="numeric" maxlength="11" required>
         </div>
         <div class="col-12 col-md-8">
             <label for="direccion" class="form-label">Dirección</label>
-            <input type="text" class="form-control" th:field="*{direccion}" th:errorclass="is-invalid" maxlength="150">
-            <div class="invalid-feedback" th:errors="*{direccion}">Error</div>
+            <input type="text" class="form-control" id="direccion" name="direccion" th:value="${tienda.direccion}" maxlength="150" required>
         </div>
         <div class="col-12 col-md-4">
             <label for="telefono" class="form-label">Teléfono</label>
-            <input type="text" class="form-control" th:field="*{telefono}" th:errorclass="is-invalid" maxlength="20">
-            <div class="invalid-feedback" th:errors="*{telefono}">Error</div>
+            <input type="text" class="form-control" id="telefono" name="telefono" th:value="${tienda.telefono}" maxlength="20">
         </div>
         <div class="col-6 col-md-4">
-            <label for="tasaIgvPorcentaje" class="form-label">IGV (%)</label>
-            <input type="number" class="form-control" th:field="*{tasaIgvPorcentaje}" th:errorclass="is-invalid"
-                   step="0.01" min="0" max="30">
-            <div class="invalid-feedback" th:errors="*{tasaIgvPorcentaje}">Error</div>
-        </div>
-        <div class="col-6 col-md-4">
-            <label for="umbralStockBajo" class="form-label">Umbral de stock bajo</label>
-            <input type="number" class="form-control" th:field="*{umbralStockBajo}" th:errorclass="is-invalid"
-                   step="1" min="0" max="1000">
-            <div class="invalid-feedback" th:errors="*{umbralStockBajo}">Error</div>
-        </div>
-
-        <div class="col-12">
-            <p class="small text-body-secondary mb-0">
-                Moneda <strong th:text="${moneda}">PEN</strong> &middot;
-                formato <strong th:text="${locale}">es-PE</strong> &middot;
-                redondeo <strong th:text="${redondeo}">HALF_UP</strong> (no editables)
-            </p>
+            <label for="igv" class="form-label">IGV (%)</label>
+            <input type="number" class="form-control" id="igv" name="igv" th:value="${tienda.igv}" step="0.01" min="0" max="30" required>
         </div>
         <div class="col-12">
             <button type="submit" class="btn btn-primary">Guardar</button>

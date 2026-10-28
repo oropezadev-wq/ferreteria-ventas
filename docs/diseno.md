@@ -1,129 +1,66 @@
-# Diseño del gestor de ventas de ferretería
+# Diseño del gestor de ventas
 
-Guía corta para implementar cada parte y explicarla en la sustentación. En el código, las partes que faltan
-están marcadas con `// TODO (issue ...)` y explican paso a paso qué escribir. Cada patrón tiene al menos un
-**ejemplo resuelto** para copiar la forma.
+Explicación corta de cada patrón: qué problema resuelve, cómo está hecho y cómo mostrarlo en la aplicación.
 
 ## Cómo encaja todo
 
 ```
-Pantalla de reportes ──► ReporteFacade.generarReporte(solicitud)          (Facade)
-                              │
-                              ├─ RegistroPlantillas.obtener(tipo) → copia  (Prototype)
-                              ├─ DirectorReporte + ReporteBuilder           (Builder)
-                              │      arma Secciones, Párrafos, Tablas...    (Composite)
-                              ├─ Sello, MarcaAgua, Firma envuelven el reporte (Decorator)
-                              └─ datos de la tienda, IGV, formato           (Singleton ConfiguracionGlobal)
+Pantalla Reportes ──► ReporteController ──► ReporteFacade.generarReporte(...)     (Facade)
+                                               │
+                                               ├─ RegistroPlantillas.obtener(tipo)  → copia      (Prototype)
+                                               ├─ DirectorReporte usa ReporteBuilder              (Builder)
+                                               │     y arma Secciones, Párrafos, Tablas, Gráficos (Composite)
+                                               └─ Sello, MarcaAgua y Firma envuelven el reporte   (Decorator)
+
+ConfiguracionGlobal.getInstancia() → datos de la tienda e IGV para menú, ticket y sello  (Singleton)
 ```
 
-Capas del proyecto:
+## Singleton: `configuracion/ConfiguracionGlobal`
 
-| Paquete | Qué hay |
-|---|---|
-| `dominio` | Las clases del negocio: `Producto`, `Venta`, `Pago`, `Dinero`. Sin Spring. |
-| `aplicacion` | Servicios con los casos de uso: `ProductoService`, `VentaService`. |
-| `infraestructura.persistencia` | Dónde se guardan los datos (en memoria). |
-| `reportes` | Un subpaquete por patrón. |
-| `web` | Controladores y formularios de las pantallas (ya terminados). |
-| `configuracion` | `ConfiguracionGlobal` (Singleton) y los datos de ejemplo. |
+- **Problema:** la razón social, el RUC y el IGV se usan en todo el sistema y tienen que ser los mismos en todas partes.
+- **Cómo:** el constructor es privado y la única forma de obtener el objeto es `ConfiguracionGlobal.getInstancia()`. La primera vez lo crea (`if (instancia == null)`) y después devuelve siempre el mismo.
+- **Dónde se usa:** en el menú y el pie de página, en el IGV de cada venta (`Venta.getOpGravada`) y en el sello de los reportes.
+- **Demo:** en *Configuración* cambiar el nombre de la tienda: cambia al momento en el menú, en el ticket y en el sello del reporte.
 
-## Reglas para todos
+## Prototype: `reportes/prototipo`
 
-- Campos `private`, sin setters en las clases del dominio. Se valida en el constructor y en los métodos
-  (lanzar `IllegalArgumentException` o una excepción del dominio con un mensaje claro).
-- Los servicios y controladores dependen de **interfaces** (`ProductoRepositorio`, `ProductoService`...).
-- Todo texto que vaya a un reporte pasa por `Html.escapar(...)`.
-- Cada clase que completes lleva al menos 3 pruebas en `src/test` (mismo paquete).
+- **Problema:** los reportes del día, del mes y del año se parecen mucho; crearlos desde cero repetiría código.
+- **Cómo:** `PlantillaReporte` tiene el método `copiar()`. En `RegistroPlantillas` se arma una plantilla base y las demás salen de clonarla y cambiarle el título, el rango de fechas o una sección.
+- **Copia profunda:** al copiar se crea una lista nueva de secciones. Así, agregar una sección a la copia no la agrega al original.
+- **Demo:** generar "Ventas del día" y "Ventas del mes": las dos salen de la misma plantilla base.
 
----
+## Builder: `reportes/builder`
 
-## Singleton: `configuracion.ConfiguracionGlobal` (terminado)
+- **Problema:** un reporte tiene muchas partes (título, subtítulo, secciones, tablas, gráficos). Armarlo con un constructor enorme sería difícil de leer.
+- **Cómo:** `ReporteBuilder` arma el reporte paso a paso con métodos encadenados:
+  `new ReporteBuilder("Ventas").seccion("Resumen").parrafo("...").build()`.
+  `DirectorReporte` decide qué pasos dar según las secciones que pide la plantilla.
+- **Demo:** "Ventas del mes" tiene resumen, detalle y ventas por categoría; "Inventario valorizado" solo tiene la tabla de inventario. Es el mismo builder con distintos pasos.
 
-- **Problema:** los datos de la tienda (razón social, RUC, IGV, moneda) se usan en todo el sistema y deben ser
-  los mismos en todas partes.
-- **Cómo:** constructor privado y un único punto de acceso, `ConfiguracionGlobal.getInstancia()`. Spring lo
-  publica como un solo bean, así que también se puede inyectar.
-- **Demo:** en *Configuración* se cambia el nombre de la tienda y aparece al instante en el menú, el ticket y
-  el sello de los reportes.
-- **Para decir:** "Hay una sola instancia en toda la aplicación; aunque 100 hilos la pidan a la vez, el test
-  comprueba que todos reciben la misma."
+## Composite: `reportes/composite`
 
-## Prototype: `reportes.prototipo` (issue Prototype)
+- **Problema:** un reporte tiene secciones, y dentro de ellas párrafos, tablas, gráficos o incluso otras secciones.
+- **Cómo:** `Seccion`, `Parrafo`, `Tabla` y `Grafico` heredan de `ElementoReporte`. `Seccion` guarda una lista de `ElementoReporte`, así que puede tener cualquier pieza dentro. Para mostrar el reporte se llama `renderizarHtml()` a cada pieza sin preguntar de qué tipo es.
+- **Demo:** cada bloque del reporte (Resumen, Detalle, Ventas por categoría) es una `Seccion` con sus hojas dentro.
 
-- **Problema:** los reportes diario, mensual y anual se parecen mucho; crearlos desde cero repetiría código.
-- **Cómo:** se arma una plantilla base y las demás se obtienen **clonándola** (`copiar()`) y cambiando lo
-  necesario. `RegistroPlantillas.obtener(tipo)` siempre entrega una copia, nunca el original.
-- **Clave:** la copia es **profunda**: la lista de secciones se copia en una lista nueva, así que cambiar la
-  copia no cambia el original. (Una copia superficial compartiría la lista: es lo que la rúbrica castiga.)
-- **Pruebas mínimas:** agregar una sección a la copia no la agrega al original; `obtener` dos veces da
-  objetos distintos; tipo sin plantilla lanza excepción.
-- **Para decir:** "No usamos `new` para cada reporte: clonamos una plantilla base y la adaptamos."
+## Decorator: `reportes/decorador`
 
-## Builder: `reportes.builder` (issue Builder)
+- **Problema:** a veces el reporte lleva sello, marca de agua o firma, y a veces no. Una clase por cada combinación serían 8 clases.
+- **Cómo:** cada adorno es una clase que envuelve un `Reporte` y le agrega algo a su HTML sin modificarlo: `new FirmaDecorador(new SelloFerreteriaDecorador(reporte))`.
+- **Demo:** generar el mismo reporte marcando y desmarcando las opciones de sello, marca de agua y firma.
 
-- **Problema:** un reporte tiene muchas partes (título, secciones, tablas, gráficos) y armarlo con un
-  constructor gigante sería ilegible.
-- **Cómo:** `ReporteBuilder` arma el reporte **paso a paso** con métodos encadenados:
-  `ReporteBuilder.nuevo("Ventas").seccion("Resumen").parrafo("...").finSeccion().build()`.
-  `DirectorReporte` decide **qué** pasos dar según las secciones de la plantilla.
-- **Pruebas mínimas:** un reporte con secciones anidadas se arma bien; `finSeccion()` sin sección abierta
-  lanza excepción; `build()` con secciones sin cerrar lanza excepción.
-- **Para decir:** "El builder separa cómo se construye el reporte de cómo se ve: el mismo builder sirve para
-  todos los tipos de reporte."
+## Facade: `reportes/fachada/ReporteFacade`
 
-## Composite: `reportes.composite` (issue Composite)
+- **Problema:** generar un reporte usa plantillas, builder, secciones y decoradores; el controlador no debería conocer todo eso.
+- **Cómo:** `generarReporte(...)` hace todo el proceso y devuelve el reporte listo. `ReporteController` solo llama a ese método.
 
-- **Problema:** un reporte tiene secciones que contienen subsecciones, párrafos y tablas, con cualquier
-  profundidad.
-- **Cómo:** `Seccion`, `Parrafo`, `Tabla` y `Grafico` heredan de `ElementoReporte`. Una sección guarda una
-  lista de `ElementoReporte`, así que puede contener cualquier pieza, incluida otra sección. Para mostrar el
-  reporte se llama a `renderizarHtml()` en todas igual, sin preguntar qué tipo son.
-- **Pruebas mínimas:** sección dentro de sección dentro de sección se muestra completa; `contarElementos()`
-  cuenta bien; un texto con `<script>` sale escapado.
-- **Para decir:** "Tratamos igual a una hoja y a una sección; por eso el anidamiento no tiene límite."
+## Productos y ventas
 
-## Decorator: `reportes.decorador` (issue Decorator)
+- `Producto` valida sus datos y controla su stock (`descontarStock`, `reponerStock`).
+- `Pago` es una clase abstracta; `PagoEfectivo`, `PagoTarjeta` y `PagoYape` validan cada uno a su manera. La venta llama a `pago.validar(total)` sin saber qué tipo de pago es (polimorfismo).
+- `VentaService.registrar` primero revisa el stock de todos los productos y recién después descuenta. Si uno no alcanza, no se cambia ningún stock.
+- Los precios incluyen IGV: op. gravada = total / 1.18, e IGV = total − op. gravada.
 
-- **Problema:** a veces el reporte lleva marca de agua, sello o firma, y a veces no. Hacer una clase por cada
-  combinación sería imposible de mantener.
-- **Cómo:** cada adorno es una clase que **envuelve** un `Reporte` y le agrega algo a su HTML, sin modificar
-  el original. Se pueden poner en capas: `new FirmaDigitalDecorador(new SelloFerreteriaDecorador(reporte, tienda))`.
-- **Firma:** es una huella SHA-256 del contenido (firma **simulada**): si cambia un carácter, cambia la huella.
-  No prueba quién firmó; para eso haría falta un certificado digital. Va siempre en la última capa.
-- **Pruebas mínimas:** el sello aparece al final; la marca de agua al inicio; la huella tiene 64 caracteres y
-  cambia si cambia el contenido.
-- **Para decir:** "Agregamos funciones al reporte en tiempo de ejecución, sin tocar la clase del reporte."
+## UML
 
-## Facade: `reportes.fachada.ReporteFacade` (issue Facade)
-
-- **Problema:** generar un reporte requiere plantillas, builder, secciones y decoradores; la pantalla no
-  debería conocer todo eso.
-- **Cómo:** un único método público, `generarReporte(SolicitudReporte)`, hace todo el proceso y devuelve el
-  reporte listo. El controlador solo llama a ese método.
-- **Para decir:** "La pantalla conoce una sola clase; si mañana cambia cómo se arma un reporte, la pantalla no
-  se entera."
-
----
-
-## Productos y ventas (dominio, POO y SOLID)
-
-- `Producto`: valida sus datos y controla su stock (`descontarStock`, `reponerStock`). Sin setters.
-- `Pago` es abstracta; `PagoEfectivo` (resuelto), `PagoTarjeta` y `PagoYape` validan cada una a su manera.
-  **Polimorfismo:** la venta llama a `pago.validar(total)` sin saber qué tipo de pago es. Para agregar Plin
-  basta con otra subclase (principio abierto/cerrado).
-- `Venta`: calcula total, operación gravada e IGV (los precios incluyen IGV).
-- `VentaServiceImpl.registrar`: primero revisa el stock de **todos** los productos y recién después descuenta.
-  Si uno no alcanza, no se cambia ningún stock.
-
-| Principio SOLID | Dónde se ve |
-|---|---|
-| S (una responsabilidad) | Cada decorador hace una sola cosa; `Producto` controla su stock; el servicio coordina |
-| O (abierto/cerrado) | Nuevo pago = nueva subclase de `Pago`; nuevo adorno = nuevo decorador |
-| L (sustitución) | Cualquier `Pago` o decorador se usa donde se espera la clase base |
-| I (interfaces pequeñas) | `ConfiguracionGlobal` se entrega como `DatosTienda`, `FormatoRegional` o `ParametrosFiscales` según quién la use |
-| D (inversión de dependencias) | Servicios y reportes dependen de interfaces (`ProductoRepositorio`, `ConsultaDatosReporte`) |
-
-## UML (StarUML, carpeta `docs/uml/`)
-
-Cada integrante dibuja el diagrama de clases de su parte. Además: diagrama de paquetes y diagrama de
-secuencia de `generarReporte`.
+Los diagramas van en `docs/uml/`: diagrama de clases de cada patrón y diagrama de paquetes.

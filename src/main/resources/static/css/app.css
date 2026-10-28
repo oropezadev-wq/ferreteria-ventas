@@ -1,8 +1,4 @@
 /* Ajustes propios sobre Bootstrap 5 */
-.navbar .nav-link.disabled {
-    opacity: .55;
-}
-
 /* Reportes: piezas del Composite y adornos de los decoradores */
 .reporte {
     position: relative;
@@ -42,9 +38,12 @@
     font-size: .875rem;
 }
 .reporte .firma {
-    font-family: monospace;
-    font-size: .75rem;
-    word-break: break-all;
+    margin-top: 2rem;
+    text-align: center;
+    font-size: .875rem;
+}
+.reporte .firma p {
+    margin: 0;
 }
 
 @media print {
