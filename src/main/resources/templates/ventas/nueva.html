@@ -18,7 +18,7 @@
                         th:attr="aria-label='Producto ' + ${i.count}">
                     <option value="">Producto…</option>
                     <option th:each="p : ${productos}" th:value="${p.id}"
-                            th:text="${p.nombre} + ' — ' + ${p.precio} + ' (stock ' + ${p.stock} + ')'">Martillo</option>
+                            th:text="${p.nombre} + ' — S/ ' + ${p.precio} + ' (stock ' + ${p.stock} + ')'">Martillo</option>
                 </select>
             </div>
             <div class="col-4 col-md-2">

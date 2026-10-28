@@ -23,14 +23,18 @@
                     <a class="nav-link" th:classappend="${activo == 'inicio'} ? 'active'"
                        th:attr="aria-current=${activo == 'inicio'} ? 'page' : null" th:href="@{/}">Inicio</a>
                 </li>
-                <li class="nav-item"><a class="nav-link" th:classappend="${activo == 'productos'} ? 'active'"
-                                        th:href="@{/productos}">Productos</a></li>
-                <li class="nav-item"><a class="nav-link" th:classappend="${activo == 'nueva-venta'} ? 'active'"
-                                        th:href="@{/ventas/nueva}">Nueva venta</a></li>
-                <li class="nav-item"><a class="nav-link" th:classappend="${activo == 'ventas'} ? 'active'"
-                                        th:href="@{/ventas}">Ventas</a></li>
-                <li class="nav-item"><a class="nav-link" th:classappend="${activo == 'reportes'} ? 'active'"
-                                        th:href="@{/reportes}">Reportes</a></li>
+                <li class="nav-item">
+                    <a class="nav-link" th:classappend="${activo == 'productos'} ? 'active'" th:href="@{/productos}">Productos</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:classappend="${activo == 'nueva-venta'} ? 'active'" th:href="@{/ventas/nueva}">Nueva venta</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:classappend="${activo == 'ventas'} ? 'active'" th:href="@{/ventas}">Ventas</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:classappend="${activo == 'reportes'} ? 'active'" th:href="@{/reportes}">Reportes</a>
+                </li>
                 <li class="nav-item">
                     <a class="nav-link" th:classappend="${activo == 'configuracion'} ? 'active'"
                        th:attr="aria-current=${activo == 'configuracion'} ? 'page' : null"
@@ -45,7 +49,7 @@
     <div class="container d-flex flex-column flex-md-row justify-content-between gap-1">
         <span th:if="${tienda != null}">
             <strong th:text="${tienda.razonSocial}">Ferretería</strong>
-            &middot; RUC <span th:text="${tienda.ruc}">20999999991</span> (ficticio)
+            &middot; RUC <span th:text="${tienda.ruc}">20999999991</span>
             &middot; <span th:text="${tienda.direccion}">Dirección</span>
             &middot; <span th:text="${tienda.telefono}">Teléfono</span>
         </span>

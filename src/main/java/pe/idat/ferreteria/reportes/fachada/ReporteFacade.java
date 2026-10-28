@@ -1,50 +1,50 @@
 package pe.idat.ferreteria.reportes.fachada;
 
 import org.springframework.stereotype.Service;
-import pe.idat.ferreteria.configuracion.DatosTienda;
 import pe.idat.ferreteria.reportes.builder.DirectorReporte;
-import pe.idat.ferreteria.reportes.prototipo.RegistroPlantillas;
-import pe.idat.ferreteria.reportes.prototipo.PlantillaReporte;
-import pe.idat.ferreteria.reportes.modelo.Reporte;
-import pe.idat.ferreteria.reportes.decorador.SelloFerreteriaDecorador;
+import pe.idat.ferreteria.reportes.decorador.FirmaDecorador;
 import pe.idat.ferreteria.reportes.decorador.MarcaAguaDecorador;
-import pe.idat.ferreteria.reportes.decorador.FirmaDigitalDecorador;
+import pe.idat.ferreteria.reportes.decorador.SelloFerreteriaDecorador;
+import pe.idat.ferreteria.reportes.modelo.Reporte;
+import pe.idat.ferreteria.reportes.modelo.TipoReporte;
+import pe.idat.ferreteria.reportes.prototipo.PlantillaReporte;
+import pe.idat.ferreteria.reportes.prototipo.RegistroPlantillas;
 
-/**
- * Patrón Facade: un único método, {@link #generarReporte}, esconde todo el proceso. Quien lo usa
- * (la pantalla de reportes) no conoce plantillas, builders, secciones ni decoradores.
- */
+import java.time.LocalDate;
+
+// Patrón Facade
 @Service
 public class ReporteFacade {
-
     private final RegistroPlantillas plantillas;
     private final DirectorReporte director;
-    private final DatosTienda tienda;
 
-    public ReporteFacade(RegistroPlantillas plantillas, DirectorReporte director, DatosTienda tienda) {
+    public ReporteFacade(RegistroPlantillas plantillas, DirectorReporte director) {
         this.plantillas = plantillas;
         this.director = director;
-        this.tienda = tienda;
     }
 
-    public ReporteGenerado generarReporte(SolicitudReporte solicitud) {
-        if (solicitud == null) {
-            throw new IllegalArgumentException("La solicitud es obligatoria");
+    public Reporte generarReporte(TipoReporte tipo, LocalDate fecha, boolean conSello, String marcaAgua,
+                                  boolean conFirma) {
+        if (tipo == null || fecha == null) {
+            throw new IllegalArgumentException("Elija el tipo de reporte y la fecha");
         }
-        PlantillaReporte plantilla = plantillas.obtener(solicitud.tipo());
-        Reporte reporte = director.construir(plantilla, solicitud.fecha());
-        if (solicitud.conSello()) {
-            reporte = new SelloFerreteriaDecorador(reporte, tienda);
+
+        // prototype
+        PlantillaReporte plantilla = plantillas.obtener(tipo);
+
+        // builder y composite
+        Reporte reporte = director.construir(plantilla, fecha);
+
+        // decorator
+        if (conSello) {
+            reporte = new SelloFerreteriaDecorador(reporte);
         }
-        if (solicitud.conMarcaAgua()) {
-            reporte = new MarcaAguaDecorador(reporte, solicitud.marcaAgua());
+        if (marcaAgua != null && !marcaAgua.isBlank()) {
+            reporte = new MarcaAguaDecorador(reporte, marcaAgua.trim());
         }
-        String huella = null;
-        if (solicitud.conFirma()) {
-            FirmaDigitalDecorador firma = new FirmaDigitalDecorador(reporte);
-            huella = firma.getHuella();
-            reporte = firma;
+        if (conFirma) {
+            reporte = new FirmaDecorador(reporte);
         }
-        return new ReporteGenerado(reporte.getTitulo(), reporte.getHtml(), huella);
+        return reporte;
     }
 }

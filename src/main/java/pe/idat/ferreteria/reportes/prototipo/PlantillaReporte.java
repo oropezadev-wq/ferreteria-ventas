@@ -6,14 +6,7 @@ import pe.idat.ferreteria.reportes.modelo.SeccionPlantilla;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Patrón Prototype: plantilla base de un reporte (título, período y qué secciones lleva).
- * <p>
- * En vez de crear cada plantilla desde cero, se arma una base y las demás se obtienen clonándola con
- * {@link #copiar()} y ajustando lo que cambia. La copia es PROFUNDA: modificar la copia nunca altera el original.
- */
-public final class PlantillaReporte implements Prototipo<PlantillaReporte> {
-
+public class PlantillaReporte implements Prototipo<PlantillaReporte> {
     private String titulo;
     private Granularidad granularidad;
     private final List<SeccionPlantilla> secciones;
@@ -30,10 +23,10 @@ public final class PlantillaReporte implements Prototipo<PlantillaReporte> {
         this.secciones = new ArrayList<>();
     }
 
-    /** Constructor copia: es la base de la copia profunda. Solo lo usa {@link #copiar()}. */
     private PlantillaReporte(PlantillaReporte original) {
         this.titulo = original.titulo;
         this.granularidad = original.granularidad;
+        // lista nueva para que la copia no cambie el original
         this.secciones = new ArrayList<>(original.secciones);
     }
 
@@ -42,28 +35,29 @@ public final class PlantillaReporte implements Prototipo<PlantillaReporte> {
         return new PlantillaReporte(this);
     }
 
-    /** Cambia el título. Devuelve la propia plantilla para encadenar: {@code base.copiar().renombrar("...")}. */
     public PlantillaReporte renombrar(String nuevoTitulo) {
         if (nuevoTitulo == null || nuevoTitulo.isBlank()) {
-            throw new IllegalArgumentException("La plantilla necesita un título");
+            throw new IllegalArgumentException("El nuevo título no puede estar vacío");
         }
-        titulo = nuevoTitulo;
+        this.titulo = nuevoTitulo;
         return this;
     }
 
     public PlantillaReporte conGranularidad(Granularidad nueva) {
         if (nueva == null) {
-            throw new IllegalArgumentException("La plantilla necesita una granularidad");
+            throw new IllegalArgumentException("La granularidad no puede ser nula");
         }
-        granularidad = nueva;
+        this.granularidad = nueva;
         return this;
     }
 
     public PlantillaReporte agregarSeccion(SeccionPlantilla seccion) {
-        if (seccion == null || secciones.contains(seccion)) {
-            throw new IllegalArgumentException("La sección debe existir y no estar repetida");
+        if (seccion == null) {
+            throw new IllegalArgumentException("La sección no puede ser nula");
         }
-        secciones.add(seccion);
+        if (!secciones.contains(seccion)) {
+            secciones.add(seccion);
+        }
         return this;
     }
 
@@ -75,8 +69,7 @@ public final class PlantillaReporte implements Prototipo<PlantillaReporte> {
         return granularidad;
     }
 
-    /** Copia de solo lectura de las secciones, en el orden en que se agregaron. */
     public List<SeccionPlantilla> getSecciones() {
-        return List.copyOf(secciones);
+        return new ArrayList<>(secciones);
     }
 }

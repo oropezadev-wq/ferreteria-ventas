@@ -30,7 +30,7 @@
                 <td th:text="${p.codigo}">HER-0001</td>
                 <td th:text="${p.nombre}">Martillo</td>
                 <td th:text="${p.categoria.nombre}">Herramientas</td>
-                <td class="text-end" th:text="${p.precio}">S/ 39.90</td>
+                <td class="text-end" th:text="'S/ ' + ${p.precio}">S/ 39.90</td>
                 <td class="text-end">
                     <span th:text="${p.stock}">10</span>
                     <span th:if="${p.estaBajoMinimo()}" class="badge text-bg-warning">bajo mínimo</span>
