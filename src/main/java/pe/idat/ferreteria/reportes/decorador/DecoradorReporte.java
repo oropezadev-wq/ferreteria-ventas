@@ -2,30 +2,20 @@ package pe.idat.ferreteria.reportes.decorador;
 
 import pe.idat.ferreteria.reportes.modelo.Reporte;
 
-/**
- * Patrón Decorator: base de los adornos de un reporte (marca de agua, sello, firma).
- * <p>
- * Un decorador ES un {@link Reporte} y además ENVUELVE a otro. Así se pueden poner capas una sobre otra
- * ({@code new FirmaDigitalDecorador(new SelloFerreteriaDecorador(reporte, tienda))}) sin cambiar el reporte original.
- */
+// Patrón Decorator: envuelve un reporte y le agrega algo sin modificar su clase.
 public abstract class DecoradorReporte implements Reporte {
 
-    private final Reporte envuelto;
+    protected final Reporte reporte;
 
-    protected DecoradorReporte(Reporte envuelto) {
-        if (envuelto == null) {
-            throw new IllegalArgumentException("El decorador necesita un reporte que envolver");
+    protected DecoradorReporte(Reporte reporte) {
+        if (reporte == null) {
+            throw new IllegalArgumentException("El decorador necesita un reporte");
         }
-        this.envuelto = envuelto;
+        this.reporte = reporte;
     }
 
-    protected Reporte getEnvuelto() {
-        return envuelto;
-    }
-
-    /** El título no cambia: se toma del reporte envuelto. Cada decorador concreto define su {@code getHtml()}. */
     @Override
     public String getTitulo() {
-        return envuelto.getTitulo();
+        return reporte.getTitulo();
     }
 }

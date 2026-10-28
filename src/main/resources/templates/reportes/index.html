@@ -7,37 +7,34 @@
 <main class="container flex-grow-1">
     <h1 class="h3 mb-3 no-imprimir">Reportes</h1>
 
-    <form th:action="@{/reportes}" th:object="${formulario}" method="post" class="row g-3 mb-4 no-imprimir">
-        <div th:if="${#fields.hasGlobalErrors()}" class="col-12">
-            <div class="alert alert-danger" role="alert">
-                <p class="mb-0" th:each="e : ${#fields.globalErrors()}" th:text="${e}">Error</p>
-            </div>
+    <form th:action="@{/reportes}" method="post" class="row g-3 mb-4 no-imprimir">
+        <div th:if="${error}" class="col-12">
+            <div class="alert alert-danger" role="alert" th:text="${error}">Error</div>
         </div>
         <div class="col-12 col-md-4">
             <label for="tipo" class="form-label">Reporte</label>
-            <select class="form-select" th:field="*{tipo}">
-                <option th:each="t : ${tipos}" th:value="${t}" th:text="${t.descripcion}">Ventas del mes</option>
+            <select class="form-select" id="tipo" name="tipo">
+                <option th:each="t : ${tipos}" th:value="${t}" th:text="${t.descripcion}"
+                        th:selected="${t == tipo}">Ventas del mes</option>
             </select>
         </div>
         <div class="col-6 col-md-3">
             <label for="fecha" class="form-label">Fecha</label>
-            <input type="date" class="form-control" th:field="*{fecha}" th:errorclass="is-invalid">
-            <div class="invalid-feedback" th:errors="*{fecha}">Error</div>
+            <input type="date" class="form-control" id="fecha" name="fecha" th:value="${fecha}" required>
         </div>
         <div class="col-6 col-md-5">
             <label for="marcaAgua" class="form-label">Marca de agua (opcional)</label>
-            <input type="text" class="form-control" th:field="*{marcaAgua}" th:errorclass="is-invalid"
+            <input type="text" class="form-control" id="marcaAgua" name="marcaAgua" th:value="${marcaAgua}"
                    maxlength="30" placeholder="CONFIDENCIAL">
-            <div class="invalid-feedback" th:errors="*{marcaAgua}">Error</div>
         </div>
         <div class="col-12 d-flex flex-wrap gap-4">
             <div class="form-check">
-                <input class="form-check-input" type="checkbox" th:field="*{conSello}">
-                <label class="form-check-label" for="conSello1">Sello de la ferretería</label>
+                <input class="form-check-input" type="checkbox" id="conSello" name="conSello" value="true" th:checked="${conSello}">
+                <label class="form-check-label" for="conSello">Sello de la ferretería</label>
             </div>
             <div class="form-check">
-                <input class="form-check-input" type="checkbox" th:field="*{conFirma}">
-                <label class="form-check-label" for="conFirma1">Firma digital (huella SHA-256)</label>
+                <input class="form-check-input" type="checkbox" id="conFirma" name="conFirma" value="true" th:checked="${conFirma}">
+                <label class="form-check-label" for="conFirma">Firma del administrador</label>
             </div>
         </div>
         <div class="col-12">
@@ -47,15 +44,14 @@
 
     <section th:if="${reporte}">
         <div class="d-flex justify-content-end mb-2 no-imprimir">
-            <button type="button" class="btn btn-outline-primary" id="boton-imprimir">Imprimir / guardar PDF</button>
+            <button type="button" class="btn btn-outline-primary" onclick="window.print()">Imprimir / guardar PDF</button>
         </div>
-        <!-- El HTML del reporte ya viene escapado por cada pieza (Html.escapar), por eso se usa th:utext. -->
+        <!-- El HTML del reporte ya viene escapado por cada pieza, por eso se usa th:utext. -->
         <article class="reporte border rounded p-3 p-md-4" th:utext="${reporte.html}"></article>
     </section>
 </main>
 
 <footer th:replace="~{fragmentos/layout :: footer}" class="no-imprimir"></footer>
 <th:block th:replace="~{fragmentos/layout :: scripts}"></th:block>
-<script th:src="@{/js/imprimir.js}"></script>
 </body>
 </html>

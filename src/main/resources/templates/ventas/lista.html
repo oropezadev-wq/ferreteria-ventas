@@ -26,7 +26,7 @@
                 <td th:text="${v.numero}">V-000001</td>
                 <td th:text="${#temporals.format(v.fechaHora, 'dd/MM/yyyy HH:mm')}">21/10/2026 10:00</td>
                 <td class="text-end" th:text="${#lists.size(v.lineas)}">2</td>
-                <td class="text-end" th:text="${v.total}">S/ 50.00</td>
+                <td class="text-end" th:text="'S/ ' + ${v.total}">S/ 50.00</td>
                 <td><a class="btn btn-sm btn-outline-secondary" th:href="@{/ventas/{id}(id=${v.id})}">Ver ticket</a></td>
             </tr>
             <tr th:if="${#lists.isEmpty(ventas)}">
