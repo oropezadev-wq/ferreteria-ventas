@@ -70,8 +70,6 @@ src/main/resources/templates   vistas (Thymeleaf)
 | Decorator | Estructural | `reportes/decorador` | Agregar sello, marca de agua y firma sin cambiar el reporte |
 | Facade | Estructural | `reportes/fachada` | Un solo método para generar cualquier reporte |
 
-La explicación de cada patrón está en [docs/diseno.md](docs/diseno.md).
-
 ## Pruebas
 
 ```bash
