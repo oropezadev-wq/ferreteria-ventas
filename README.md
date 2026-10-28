@@ -15,15 +15,24 @@ Los datos se guardan **en memoria** (listas en Java), sin base de datos. Al arra
 
 ## Cómo correrlo
 
-Necesita el JDK 21. Desde IntelliJ: abrir el proyecto y ejecutar `FerreteriaVentasApplication`.
+Necesita el JDK 21 y VS Code (con Git instalado). No hace falta instalar Maven.
 
-Desde la terminal:
+1. En VS Code: `Ctrl + Shift + P` → **Git: Clone** → pegar la dirección del repositorio y elegir una carpeta.
+2. Abrir una terminal (`Ctrl + ñ`) y ejecutar:
 
-```bash
-./mvnw spring-boot:run        # en Windows: mvnw.cmd spring-boot:run
+```powershell
+.\mvnw spring-boot:run
 ```
 
-Luego abrir http://localhost:8080
+Si sale un error de `JAVA_HOME`, indicar dónde está Java antes de correrlo (la ruta puede variar según la versión instalada):
+
+```powershell
+$env:JAVA_HOME="C:\Program Files\Eclipse Adoptium\jdk-21.0.12.101-hotspot"; .\mvnw spring-boot:run
+```
+
+3. Cuando aparezca `Started FerreteriaVentasApplication`, abrir http://localhost:8080
+
+Si el puerto 8080 está ocupado, usar otro: `.\mvnw spring-boot:run "-Dspring-boot.run.arguments=--server.port=8082"` y abrir http://localhost:8082
 
 ## Estructura (MVC)
 
