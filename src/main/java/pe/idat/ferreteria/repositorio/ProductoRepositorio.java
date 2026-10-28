@@ -6,10 +6,8 @@ import pe.idat.ferreteria.modelo.Producto;
 import java.util.ArrayList;
 import java.util.List;
 
-// Guarda los productos en memoria (no usamos base de datos).
 @Repository
 public class ProductoRepositorio {
-
     private final List<Producto> productos = new ArrayList<>();
     private long ultimoId = 0;
 

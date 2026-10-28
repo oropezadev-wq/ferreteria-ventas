@@ -5,9 +5,7 @@ import org.springframework.web.util.HtmlUtils;
 import java.util.ArrayList;
 import java.util.List;
 
-// Hoja: una tabla con encabezados y filas.
 public class Tabla extends ElementoReporte {
-
     private final List<String> encabezados;
     private final List<List<String>> filas;
 
@@ -47,7 +45,6 @@ public class Tabla extends ElementoReporte {
 
     @Override
     public Tabla copiar() {
-        // El constructor ya hace listas nuevas.
         return new Tabla(encabezados, filas);
     }
 }

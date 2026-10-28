@@ -4,14 +4,12 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 public class PagoEfectivo extends Pago {
-
     private final BigDecimal recibido;
 
     public PagoEfectivo(BigDecimal recibido) {
         if (recibido == null) {
             throw new IllegalArgumentException("Indique el monto recibido en efectivo");
         }
-        // Siempre con 2 decimales, como un monto en soles.
         this.recibido = recibido.setScale(2, RoundingMode.HALF_UP);
     }
 

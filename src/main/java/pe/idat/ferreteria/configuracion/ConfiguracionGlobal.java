@@ -2,9 +2,8 @@ package pe.idat.ferreteria.configuracion;
 
 import java.math.BigDecimal;
 
-// Patrón Singleton: la configuración de la tienda existe una sola vez en toda la aplicación.
+// Patrón Singleton
 public class ConfiguracionGlobal {
-
     private static ConfiguracionGlobal instancia;
 
     private String razonSocial = "Ferretería El Constructor S.A.C.";
@@ -13,11 +12,9 @@ public class ConfiguracionGlobal {
     private String telefono = "(01) 555-0123";
     private BigDecimal igv = new BigDecimal("18");
 
-    // Constructor privado: nadie puede hacer "new ConfiguracionGlobal()" desde afuera.
     private ConfiguracionGlobal() {
     }
 
-    // Devuelve siempre el mismo objeto; lo crea solo la primera vez.
     public static synchronized ConfiguracionGlobal getInstancia() {
         if (instancia == null) {
             instancia = new ConfiguracionGlobal();
@@ -61,7 +58,6 @@ public class ConfiguracionGlobal {
         return telefono;
     }
 
-    // IGV en porcentaje, por ejemplo 18.
     public BigDecimal getIgv() {
         return igv;
     }

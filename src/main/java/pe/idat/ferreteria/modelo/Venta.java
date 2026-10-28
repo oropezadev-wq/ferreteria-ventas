@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Venta {
-
     private final Long id;
     private final String numero;
     private final LocalDateTime fechaHora;
@@ -29,7 +28,6 @@ public class Venta {
         this.fechaHora = fechaHora;
         this.lineas = new ArrayList<>(lineas);
         this.pago = pago;
-        // Cada tipo de pago revisa si cubre el total.
         pago.validar(getTotal());
     }
 
@@ -41,7 +39,6 @@ public class Venta {
         return total;
     }
 
-    // Los precios ya incluyen IGV: op. gravada = total / (1 + IGV/100).
     public BigDecimal getOpGravada() {
         BigDecimal igv = ConfiguracionGlobal.getInstancia().getIgv();
         BigDecimal divisor = BigDecimal.ONE.add(igv.divide(new BigDecimal("100")));

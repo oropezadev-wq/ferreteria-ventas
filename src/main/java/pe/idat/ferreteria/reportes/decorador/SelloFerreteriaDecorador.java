@@ -4,9 +4,7 @@ import org.springframework.web.util.HtmlUtils;
 import pe.idat.ferreteria.configuracion.ConfiguracionGlobal;
 import pe.idat.ferreteria.reportes.modelo.Reporte;
 
-// Agrega al final los datos de la tienda, que salen del Singleton.
 public class SelloFerreteriaDecorador extends DecoradorReporte {
-
     public SelloFerreteriaDecorador(Reporte reporte) {
         super(reporte);
     }

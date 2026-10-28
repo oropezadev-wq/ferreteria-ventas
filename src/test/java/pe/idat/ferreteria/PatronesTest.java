@@ -19,9 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-// Una prueba sencilla por patrón.
 class PatronesTest {
-
     @Test
     void singletonDevuelveSiempreLaMismaInstancia() {
         assertSame(ConfiguracionGlobal.getInstancia(), ConfiguracionGlobal.getInstancia());
@@ -44,7 +42,6 @@ class PatronesTest {
         Seccion interna = new Seccion("Interna").agregar(new Parrafo("b"));
         Seccion raiz = new Seccion("Raíz").agregar(new Parrafo("a")).agregar(interna);
 
-        // raíz + párrafo a + sección interna + párrafo b
         assertEquals(4, raiz.contarElementos());
     }
 

@@ -12,9 +12,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-// Patrón Builder: arma el reporte paso a paso. Cada método devuelve el builder para encadenar llamadas.
+// Patrón Builder
 public class ReporteBuilder {
-
     private final String titulo;
     private String subtitulo = "";
     private final List<Seccion> secciones = new ArrayList<>();
@@ -32,7 +31,6 @@ public class ReporteBuilder {
         return this;
     }
 
-    // Abre una sección nueva; lo que se agregue después va dentro de ella.
     public ReporteBuilder seccion(String tituloSeccion) {
         seccionActual = new Seccion(tituloSeccion);
         secciones.add(seccionActual);

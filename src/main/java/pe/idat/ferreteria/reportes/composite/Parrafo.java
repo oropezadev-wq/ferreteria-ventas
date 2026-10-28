@@ -2,9 +2,7 @@ package pe.idat.ferreteria.reportes.composite;
 
 import org.springframework.web.util.HtmlUtils;
 
-// Hoja: un texto.
 public class Parrafo extends ElementoReporte {
-
     private final String texto;
 
     public Parrafo(String texto) {

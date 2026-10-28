@@ -15,7 +15,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class VentaTest {
-
     private final List<LineaVenta> lineas = List.of(
             new LineaVenta(1L, "Martillo", CategoriaProducto.HERRAMIENTAS, new BigDecimal("39.90"), 2),
             new LineaVenta(2L, "Foco LED", CategoriaProducto.ELECTRICIDAD, new BigDecimal("9.50"), 1));
@@ -26,7 +25,6 @@ class VentaTest {
 
         assertEquals("V-000001", venta.getNumero());
         assertEquals(new BigDecimal("89.30"), venta.getTotal());
-        // 89.30 / 1.18 = 75.68 y el IGV es la diferencia (con el IGV de 18 % por defecto).
         assertEquals(new BigDecimal("75.68"), venta.getOpGravada());
         assertEquals(new BigDecimal("13.62"), venta.getIgv());
     }

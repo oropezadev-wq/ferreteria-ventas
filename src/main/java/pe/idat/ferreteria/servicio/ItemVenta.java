@@ -1,8 +1,6 @@
 package pe.idat.ferreteria.servicio;
 
-// Lo que el vendedor pide en la pantalla: qué producto y cuántos.
 public class ItemVenta {
-
     private final Long productoId;
     private final int cantidad;
 

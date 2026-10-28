@@ -8,14 +8,11 @@ import pe.idat.ferreteria.reportes.modelo.TipoReporte;
 import java.util.HashMap;
 import java.util.Map;
 
-// Guarda una plantilla original por tipo de reporte y siempre entrega copias.
 @Component
 public class RegistroPlantillas {
-
     private final Map<TipoReporte, PlantillaReporte> plantillas = new HashMap<>();
 
     public RegistroPlantillas() {
-        // Una plantilla base y las demás salen de clonarla y cambiarle algo.
         PlantillaReporte base = new PlantillaReporte("Reporte de ventas", Granularidad.DIA)
                 .agregarSeccion(SeccionPlantilla.RESUMEN)
                 .agregarSeccion(SeccionPlantilla.DETALLE_VENTAS);
@@ -37,7 +34,6 @@ public class RegistroPlantillas {
         if (plantilla == null) {
             throw new IllegalArgumentException("No hay plantilla para el reporte " + tipo);
         }
-        // Se entrega una copia para que nadie modifique la original.
         return plantilla.copiar();
     }
 }

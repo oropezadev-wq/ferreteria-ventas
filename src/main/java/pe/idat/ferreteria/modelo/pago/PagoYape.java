@@ -3,7 +3,6 @@ package pe.idat.ferreteria.modelo.pago;
 import java.math.BigDecimal;
 
 public class PagoYape extends Pago {
-
     private final String celular;
 
     public PagoYape(String celular) {
@@ -15,7 +14,7 @@ public class PagoYape extends Pago {
 
     @Override
     public void validar(BigDecimal total) {
-        // Igual que la tarjeta: Yape cobra el total exacto.
+        // yape cobra el total exacto
     }
 
     @Override

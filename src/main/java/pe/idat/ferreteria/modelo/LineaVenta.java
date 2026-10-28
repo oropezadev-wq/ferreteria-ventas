@@ -2,9 +2,7 @@ package pe.idat.ferreteria.modelo;
 
 import java.math.BigDecimal;
 
-// Un producto dentro de una venta. Guarda nombre y precio del momento de la venta.
 public class LineaVenta {
-
     private final Long productoId;
     private final String producto;
     private final CategoriaProducto categoria;

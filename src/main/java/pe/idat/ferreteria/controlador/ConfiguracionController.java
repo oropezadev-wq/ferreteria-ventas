@@ -14,10 +14,8 @@ import java.math.BigDecimal;
 @Controller
 @RequestMapping("/configuracion")
 public class ConfiguracionController {
-
     @GetMapping
     public String formulario() {
-        // Los datos llegan a la vista como "tienda" (ver DatosTiendaAdvice).
         return "configuracion";
     }
 

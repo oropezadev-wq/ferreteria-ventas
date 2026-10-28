@@ -18,7 +18,6 @@ import java.util.List;
 @Controller
 @RequestMapping("/ventas")
 public class VentaController {
-
     private final VentaService ventas;
     private final ProductoService productos;
 

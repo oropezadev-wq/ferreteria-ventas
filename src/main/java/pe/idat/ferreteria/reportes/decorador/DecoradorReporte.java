@@ -2,9 +2,8 @@ package pe.idat.ferreteria.reportes.decorador;
 
 import pe.idat.ferreteria.reportes.modelo.Reporte;
 
-// Patrón Decorator: envuelve un reporte y le agrega algo sin modificar su clase.
+// Patrón Decorator
 public abstract class DecoradorReporte implements Reporte {
-
     protected final Reporte reporte;
 
     protected DecoradorReporte(Reporte reporte) {

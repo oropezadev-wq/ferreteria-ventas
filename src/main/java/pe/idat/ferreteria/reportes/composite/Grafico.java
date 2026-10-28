@@ -7,15 +7,12 @@ import java.math.RoundingMode;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-// Hoja: un gráfico de barras hecho con divs.
 public class Grafico extends ElementoReporte {
-
     private final String titulo;
     private final Map<String, BigDecimal> valores;
 
     public Grafico(String titulo, Map<String, BigDecimal> valores) {
         this.titulo = titulo;
-        // LinkedHashMap mantiene el orden de las barras.
         this.valores = new LinkedHashMap<>(valores);
     }
 

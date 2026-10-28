@@ -10,7 +10,6 @@ import java.util.List;
 
 @Service
 public class ProductoService {
-
     private final ProductoRepositorio repositorio;
 
     public ProductoService(ProductoRepositorio repositorio) {

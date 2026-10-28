@@ -16,10 +16,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-// El Director sabe en qué orden llamar al Builder según la plantilla.
 @Component
 public class DirectorReporte {
-
     private static final DateTimeFormatter FECHA = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
     private final DatosReporte datos;
@@ -29,7 +27,6 @@ public class DirectorReporte {
     }
 
     public Reporte construir(PlantillaReporte plantilla, LocalDate fecha) {
-        // Rango de fechas según la plantilla.
         LocalDate desde = fecha;
         LocalDate hasta = fecha;
         switch (plantilla.getGranularidad()) {

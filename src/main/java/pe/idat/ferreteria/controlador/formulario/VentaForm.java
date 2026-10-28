@@ -10,9 +10,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-// Datos que llegan desde la pantalla de nueva venta: 5 filas de producto y el pago.
 public class VentaForm {
-
     private List<Fila> filas = new ArrayList<>();
     private String metodoPago = "EFECTIVO";
     private BigDecimal montoRecibido;
@@ -25,7 +23,6 @@ public class VentaForm {
         }
     }
 
-    // Solo las filas que tienen producto y cantidad.
     public List<ItemVenta> items() {
         List<ItemVenta> items = new ArrayList<>();
         for (Fila fila : filas) {
@@ -87,7 +84,6 @@ public class VentaForm {
     }
 
     public static class Fila {
-
         private Long productoId;
         private Integer cantidad;
 

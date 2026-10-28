@@ -16,7 +16,6 @@ import java.time.LocalDate;
 @Controller
 @RequestMapping("/reportes")
 public class ReporteController {
-
     private final ReporteFacade facade;
 
     public ReporteController(ReporteFacade facade) {
@@ -36,7 +35,6 @@ public class ReporteController {
                           @RequestParam(defaultValue = "false") boolean conFirma,
                           Model modelo) {
         try {
-            // Una sola llamada: la fachada se encarga del resto.
             Reporte reporte = facade.generarReporte(tipo, fecha, conSello, marcaAgua, conFirma);
             modelo.addAttribute("reporte", reporte);
         } catch (IllegalArgumentException e) {

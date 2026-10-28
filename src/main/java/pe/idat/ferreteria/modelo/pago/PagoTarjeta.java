@@ -3,7 +3,6 @@ package pe.idat.ferreteria.modelo.pago;
 import java.math.BigDecimal;
 
 public class PagoTarjeta extends Pago {
-
     private final String ultimosCuatro;
 
     public PagoTarjeta(String ultimosCuatro) {
@@ -15,7 +14,7 @@ public class PagoTarjeta extends Pago {
 
     @Override
     public void validar(BigDecimal total) {
-        // El banco cobra el total exacto, no hay nada más que revisar.
+        // el banco cobra el total exacto
     }
 
     @Override

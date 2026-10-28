@@ -17,7 +17,6 @@ import pe.idat.ferreteria.servicio.ProductoService;
 @Controller
 @RequestMapping("/productos")
 public class ProductoController {
-
     private final ProductoService productos;
 
     public ProductoController(ProductoService productos) {

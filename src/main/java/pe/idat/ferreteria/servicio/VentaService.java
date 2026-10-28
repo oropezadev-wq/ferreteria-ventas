@@ -14,7 +14,6 @@ import java.util.List;
 
 @Service
 public class VentaService {
-
     private final VentaRepositorio repositorio;
     private final ProductoService productos;
 
@@ -27,13 +26,11 @@ public class VentaService {
         return registrar(items, pago, LocalDateTime.now());
     }
 
-    // synchronized: así dos ventas a la vez no descuentan el mismo stock.
     public synchronized Venta registrar(List<ItemVenta> items, Pago pago, LocalDateTime fechaHora) {
         if (items == null || items.isEmpty()) {
             throw new IllegalArgumentException("La venta necesita al menos un producto");
         }
 
-        // 1. Revisar que haya stock de todo antes de descontar nada.
         List<LineaVenta> lineas = new ArrayList<>();
         for (ItemVenta item : items) {
             Producto producto = productos.buscar(item.getProductoId());
@@ -46,10 +43,8 @@ public class VentaService {
                     producto.getPrecio(), item.getCantidad()));
         }
 
-        // 2. Crear la venta: aquí se valida el pago.
         Venta venta = new Venta(repositorio.siguienteId(), fechaHora, lineas, pago);
 
-        // 3. Recién ahora se descuenta el stock y se guarda.
         for (LineaVenta linea : lineas) {
             productos.buscar(linea.getProductoId()).descontarStock(linea.getCantidad());
         }
@@ -57,7 +52,6 @@ public class VentaService {
         return venta;
     }
 
-    // De la más reciente a la más antigua.
     public List<Venta> listar() {
         List<Venta> ventas = repositorio.listar();
         ventas.sort(Comparator.comparing(Venta::getFechaHora).reversed());

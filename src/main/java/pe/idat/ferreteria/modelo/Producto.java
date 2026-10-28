@@ -3,7 +3,6 @@ package pe.idat.ferreteria.modelo;
 import java.math.BigDecimal;
 
 public class Producto {
-
     private final Long id;
     private final String codigo;
     private String nombre;

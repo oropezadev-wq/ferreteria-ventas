@@ -6,9 +6,7 @@ import pe.idat.ferreteria.reportes.modelo.SeccionPlantilla;
 import java.util.ArrayList;
 import java.util.List;
 
-// Plantilla de reporte: título, rango de fechas y secciones. Se clona en vez de armarla desde cero.
 public class PlantillaReporte implements Prototipo<PlantillaReporte> {
-
     private String titulo;
     private Granularidad granularidad;
     private final List<SeccionPlantilla> secciones;
@@ -25,11 +23,10 @@ public class PlantillaReporte implements Prototipo<PlantillaReporte> {
         this.secciones = new ArrayList<>();
     }
 
-    // Constructor copia: se usa solo desde copiar().
     private PlantillaReporte(PlantillaReporte original) {
         this.titulo = original.titulo;
         this.granularidad = original.granularidad;
-        // Lista nueva: si se compartiera la misma, cambiar la copia también cambiaría el original.
+        // lista nueva para que la copia no cambie el original
         this.secciones = new ArrayList<>(original.secciones);
     }
 

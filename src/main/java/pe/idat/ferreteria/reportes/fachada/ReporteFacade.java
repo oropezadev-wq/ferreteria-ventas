@@ -12,10 +12,9 @@ import pe.idat.ferreteria.reportes.prototipo.RegistroPlantillas;
 
 import java.time.LocalDate;
 
-// Patrón Facade: el controlador llama a un solo método y la fachada coordina los demás patrones.
+// Patrón Facade
 @Service
 public class ReporteFacade {
-
     private final RegistroPlantillas plantillas;
     private final DirectorReporte director;
 
@@ -30,13 +29,13 @@ public class ReporteFacade {
             throw new IllegalArgumentException("Elija el tipo de reporte y la fecha");
         }
 
-        // 1. Prototype: copia de la plantilla.
+        // prototype
         PlantillaReporte plantilla = plantillas.obtener(tipo);
 
-        // 2. Builder + Composite: se arma el contenido.
+        // builder y composite
         Reporte reporte = director.construir(plantilla, fecha);
 
-        // 3. Decorator: se agregan los adornos elegidos.
+        // decorator
         if (conSello) {
             reporte = new SelloFerreteriaDecorador(reporte);
         }

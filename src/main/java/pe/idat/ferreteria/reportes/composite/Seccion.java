@@ -5,9 +5,7 @@ import org.springframework.web.util.HtmlUtils;
 import java.util.ArrayList;
 import java.util.List;
 
-// Contenedor: tiene un título y otros elementos dentro (hojas u otras secciones).
 public class Seccion extends ElementoReporte {
-
     private final String titulo;
     private final List<ElementoReporte> hijos = new ArrayList<>();
 
@@ -26,7 +24,6 @@ public class Seccion extends ElementoReporte {
     @Override
     public String renderizarHtml() {
         StringBuilder html = new StringBuilder("<section><h2>").append(HtmlUtils.htmlEscape(titulo)).append("</h2>");
-        // No importa si el hijo es hoja o sección: todos saben renderizarse.
         for (ElementoReporte hijo : hijos) {
             html.append(hijo.renderizarHtml());
         }
@@ -45,7 +42,6 @@ public class Seccion extends ElementoReporte {
 
     @Override
     public Seccion copiar() {
-        // Copia profunda: se copia cada hijo, no se reutiliza el mismo objeto.
         Seccion copia = new Seccion(titulo);
         for (ElementoReporte hijo : hijos) {
             copia.agregar(hijo.copiar());

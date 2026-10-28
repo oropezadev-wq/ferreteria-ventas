@@ -5,9 +5,7 @@ import pe.idat.ferreteria.modelo.Producto;
 
 import java.math.BigDecimal;
 
-// Datos que llegan desde el formulario de productos.
 public class ProductoForm {
-
     private String codigo;
     private String nombre;
     private CategoriaProducto categoria;

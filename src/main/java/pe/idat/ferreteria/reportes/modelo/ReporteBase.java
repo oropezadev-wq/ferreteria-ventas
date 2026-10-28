@@ -6,9 +6,7 @@ import pe.idat.ferreteria.reportes.composite.Seccion;
 import java.util.ArrayList;
 import java.util.List;
 
-// El reporte que arma el Builder, sin adornos. Los decoradores lo envuelven.
 public class ReporteBase implements Reporte {
-
     private final String titulo;
     private final String subtitulo;
     private final List<Seccion> secciones;

@@ -8,7 +8,6 @@ import java.time.LocalDate;
 
 @Controller
 public class InicioController {
-
     @GetMapping("/")
     public String inicio(Model modelo) {
         modelo.addAttribute("hoy", LocalDate.now());

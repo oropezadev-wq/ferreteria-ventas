@@ -17,10 +17,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
-// Carga productos y ventas de ejemplo al arrancar. Como todo está en memoria, se cargan de nuevo cada vez.
 @Component
 public class DatosIniciales implements ApplicationRunner {
-
     private final ProductoService productos;
     private final VentaService ventas;
 
@@ -58,9 +56,7 @@ public class DatosIniciales implements ApplicationRunner {
         productos.crear(codigo, nombre, categoria, new BigDecimal(precio), stock, stockMinimo);
     }
 
-    // 30 ventas repartidas en los últimos dos meses; la última es de hoy.
     private void cargarVentas() {
-        // Solo productos con stock de sobra (no se usan los que están bajo el mínimo).
         long[] ids = {1, 2, 3, 4, 5, 7, 8, 9, 10, 11, 13, 15};
         LocalDate hoy = LocalDate.now();
         for (int i = 29; i >= 0; i--) {

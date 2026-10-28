@@ -16,10 +16,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-// Saca de los repositorios los datos que necesitan los reportes.
 @Component
 public class DatosReporte {
-
     private final VentaRepositorio ventas;
     private final ProductoRepositorio productos;
 
@@ -28,7 +26,6 @@ public class DatosReporte {
         this.productos = productos;
     }
 
-    // Ventas entre dos fechas (incluidas), de la más antigua a la más reciente.
     public List<Venta> ventasEntre(LocalDate desde, LocalDate hasta) {
         List<Venta> resultado = new ArrayList<>();
         for (Venta venta : ventas.listar()) {
