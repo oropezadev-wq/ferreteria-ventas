@@ -1,0 +1,41 @@
+@startuml
+!pragma layout smetana
+skinparam classAttributeIconSize 0
+skinparam dpi 150
+skinparam shadowing false
+skinparam monochrome true
+skinparam defaultFontName Arial
+skinparam defaultFontSize 13
+skinparam packageStyle rectangle
+hide empty members
+title Patrón Composite
+abstract class ElementoReporte {
+  + {abstract} renderizarHtml() : String
+  + {abstract} contarElementos() : int
+  + {abstract} copiar() : ElementoReporte
+}
+class Seccion {
+  - titulo : String
+  - hijos : List<ElementoReporte>
+  + agregar(hijo : ElementoReporte) : Seccion
+  + renderizarHtml() : String
+  + contarElementos() : int
+  + copiar() : Seccion
+}
+class Parrafo {
+  - texto : String
+}
+class Tabla {
+  - encabezados : List<String>
+  - filas : List<List<String>>
+}
+class Grafico {
+  - titulo : String
+  - valores : Map<String, BigDecimal>
+}
+ElementoReporte <|-- Seccion
+ElementoReporte <|-- Parrafo
+ElementoReporte <|-- Tabla
+ElementoReporte <|-- Grafico
+Seccion o--> "*" ElementoReporte : hijos
+@enduml

@@ -1,0 +1,44 @@
+@startuml
+!pragma layout smetana
+skinparam dpi 150
+skinparam shadowing false
+skinparam monochrome true
+skinparam defaultFontName Arial
+skinparam defaultFontSize 13
+hide empty members
+title Diagrama de paquetes (MVC)
+package controlador {
+}
+package vistas {
+}
+package servicio {
+}
+package repositorio {
+}
+package modelo {
+}
+package configuracion {
+}
+package reportes {
+  package fachada {
+  }
+  package prototipo {
+  }
+  package builder {
+  }
+  package composite {
+  }
+  package decorador {
+  }
+  package datos {
+  }
+}
+controlador ..> vistas
+controlador ..> servicio
+controlador ..> fachada
+servicio ..> repositorio
+servicio ..> modelo
+repositorio ..> modelo
+modelo ..> configuracion
+decorador ..> configuracion
+@enduml
