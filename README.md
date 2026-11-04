@@ -72,7 +72,7 @@ src/main/resources/templates   vistas (Thymeleaf)
 
 ## Bocetos
 
-Los bocetos de las pantallas (versión computadora y celular) están en `docs/bocetos/ferreteria-bocetos.drawio`. Se abren en [app.diagrams.net](https://app.diagrams.net) o en draw.io; en modo vista, los botones del menú llevan a cada pantalla. En `docs/bocetos/png` están exportados como imagen.
+Los bocetos de las pantallas (versión computadora y celular) están en `docs/bocetos/ferreteria-bocetos.drawio`. Se pueden abrir directo desde [este enlace](https://app.diagrams.net/#Horopezadev-wq%2Fferreteria-ventas%2Fmain%2Fdocs%2Fbocetos%2Fferreteria-bocetos.drawio) o en draw.io; en modo vista, los botones del menú llevan a cada pantalla. En `docs/bocetos/png` están exportados como imagen.
 
 ## Documentación
 
