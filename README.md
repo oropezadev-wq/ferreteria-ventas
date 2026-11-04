@@ -70,6 +70,17 @@ src/main/resources/templates   vistas (Thymeleaf)
 | Decorator | Estructural | `reportes/decorador` | Agregar sello, marca de agua y firma sin cambiar el reporte |
 | Facade | Estructural | `reportes/fachada` | Un solo método para generar cualquier reporte |
 
+## Bocetos
+
+Los bocetos de las pantallas (versión computadora y celular) están en `docs/bocetos/ferreteria-bocetos.drawio`. Se pueden abrir directo desde [este enlace](https://app.diagrams.net/#Horopezadev-wq%2Fferreteria-ventas%2Fmain%2Fdocs%2Fbocetos%2Fferreteria-bocetos.drawio) o en draw.io; en modo vista, los botones del menú llevan a cada pantalla. En `docs/bocetos/png` están exportados como imagen.
+
+## Documentación
+
+- `docs/uml`: diagramas UML (paquetes, cada patrón y ventas).
+- `docs/bocetos`: bocetos navegables en draw.io.
+- `docs/capturas`: capturas de las pantallas del sistema.
+- `docs/usabilidad`: guion de las pruebas de usabilidad.
+
 ## Pruebas
 
 ```bash
