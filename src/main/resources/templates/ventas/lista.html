@@ -16,6 +16,8 @@
             <tr>
                 <th>N.º</th>
                 <th>Fecha</th>
+                <th>Sede</th>
+                <th>Cliente</th>
                 <th class="text-end">Productos</th>
                 <th class="text-end">Total</th>
                 <th></th>
@@ -25,12 +27,14 @@
             <tr th:each="v : ${ventas}">
                 <td th:text="${v.numero}">V-000001</td>
                 <td th:text="${#temporals.format(v.fechaHora, 'dd/MM/yyyy HH:mm')}">21/10/2026 10:00</td>
+                <td th:text="${v.sede.nombre}">Lima</td>
+                <td th:text="${v.cliente}">Cliente general</td>
                 <td class="text-end" th:text="${#lists.size(v.lineas)}">2</td>
                 <td class="text-end" th:text="'S/ ' + ${v.total}">S/ 50.00</td>
                 <td><a class="btn btn-sm btn-outline-secondary" th:href="@{/ventas/{id}(id=${v.id})}">Ver ticket</a></td>
             </tr>
             <tr th:if="${#lists.isEmpty(ventas)}">
-                <td colspan="5" class="text-center text-body-secondary">Todavía no hay ventas.</td>
+                <td colspan="7" class="text-center text-body-secondary">Todavía no hay ventas.</td>
             </tr>
             </tbody>
         </table>

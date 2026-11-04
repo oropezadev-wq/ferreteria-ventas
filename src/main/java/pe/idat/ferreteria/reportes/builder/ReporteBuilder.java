@@ -18,6 +18,8 @@ public class ReporteBuilder {
     private String subtitulo = "";
     private final List<Seccion> secciones = new ArrayList<>();
     private Seccion seccionActual;
+    // donde se agregan los párrafos, tablas y gráficos: la sección o su subsección
+    private Seccion destino;
 
     public ReporteBuilder(String titulo) {
         if (titulo == null || titulo.isBlank()) {
@@ -34,21 +36,30 @@ public class ReporteBuilder {
     public ReporteBuilder seccion(String tituloSeccion) {
         seccionActual = new Seccion(tituloSeccion);
         secciones.add(seccionActual);
+        destino = seccionActual;
+        return this;
+    }
+
+    // una sección dentro de la sección actual
+    public ReporteBuilder subseccion(String tituloSubseccion) {
+        Seccion subseccion = new Seccion(tituloSubseccion);
+        getSeccionActual().agregar(subseccion);
+        destino = subseccion;
         return this;
     }
 
     public ReporteBuilder parrafo(String texto) {
-        getSeccionActual().agregar(new Parrafo(texto));
+        getDestino().agregar(new Parrafo(texto));
         return this;
     }
 
     public ReporteBuilder tabla(List<String> encabezados, List<List<String>> filas) {
-        getSeccionActual().agregar(new Tabla(encabezados, filas));
+        getDestino().agregar(new Tabla(encabezados, filas));
         return this;
     }
 
     public ReporteBuilder grafico(String tituloGrafico, Map<String, BigDecimal> valores) {
-        getSeccionActual().agregar(new Grafico(tituloGrafico, valores));
+        getDestino().agregar(new Grafico(tituloGrafico, valores));
         return this;
     }
 
@@ -61,5 +72,10 @@ public class ReporteBuilder {
             throw new IllegalStateException("Primero hay que abrir una sección con seccion()");
         }
         return seccionActual;
+    }
+
+    private Seccion getDestino() {
+        getSeccionActual();
+        return destino;
     }
 }

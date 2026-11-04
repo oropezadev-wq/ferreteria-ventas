@@ -30,6 +30,7 @@ class RegistroPlantillas {
 enum Granularidad {
   DIA
   MES
+  TRIMESTRE
   ANIO
   NINGUNA
 }

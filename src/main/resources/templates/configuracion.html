@@ -6,9 +6,12 @@
 
 <main class="container flex-grow-1">
     <h1 class="h3 mb-3">Configuración de la tienda</h1>
-    <p class="text-body-secondary small">Estos datos se guardan en un solo objeto (Singleton) y los usan el menú, los tickets y los reportes.</p>
+    <p class="text-body-secondary small">Estos datos se usan en el menú, los tickets y los reportes. El tipo de cambio pasa a soles el costo de los productos comprados en dólares.</p>
 
-    <div th:if="${mensaje}" class="alert alert-success" role="status" th:text="${mensaje}">Configuración guardada.</div>
+    <div th:if="${mensaje}" class="alert alert-success alert-dismissible" role="status">
+        <span th:text="${mensaje}">Configuración guardada.</span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+    </div>
     <div th:if="${error}" class="alert alert-danger" role="alert" th:text="${error}">Error</div>
 
     <form th:action="@{/configuracion}" method="post" class="row g-3">
@@ -31,6 +34,10 @@
         <div class="col-6 col-md-4">
             <label for="igv" class="form-label">IGV (%)</label>
             <input type="number" class="form-control" id="igv" name="igv" th:value="${tienda.igv}" step="0.01" min="0" max="30" required>
+        </div>
+        <div class="col-6 col-md-4">
+            <label for="tipoCambio" class="form-label">Tipo de cambio (S/ por US$)</label>
+            <input type="number" class="form-control" id="tipoCambio" name="tipoCambio" th:value="${tienda.tipoCambio}" step="0.001" min="0.001" required>
         </div>
         <div class="col-12">
             <button type="submit" class="btn btn-primary">Guardar</button>

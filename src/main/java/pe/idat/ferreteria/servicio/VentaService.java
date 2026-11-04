@@ -3,6 +3,7 @@ package pe.idat.ferreteria.servicio;
 import org.springframework.stereotype.Service;
 import pe.idat.ferreteria.modelo.LineaVenta;
 import pe.idat.ferreteria.modelo.Producto;
+import pe.idat.ferreteria.modelo.Sede;
 import pe.idat.ferreteria.modelo.Venta;
 import pe.idat.ferreteria.modelo.pago.Pago;
 import pe.idat.ferreteria.repositorio.VentaRepositorio;
@@ -22,11 +23,12 @@ public class VentaService {
         this.productos = productos;
     }
 
-    public Venta registrar(List<ItemVenta> items, Pago pago) {
-        return registrar(items, pago, LocalDateTime.now());
+    public Venta registrar(List<ItemVenta> items, Pago pago, Sede sede, String cliente, String vendedor) {
+        return registrar(items, pago, sede, cliente, vendedor, LocalDateTime.now());
     }
 
-    public synchronized Venta registrar(List<ItemVenta> items, Pago pago, LocalDateTime fechaHora) {
+    public synchronized Venta registrar(List<ItemVenta> items, Pago pago, Sede sede, String cliente, String vendedor,
+                                        LocalDateTime fechaHora) {
         if (items == null || items.isEmpty()) {
             throw new IllegalArgumentException("La venta necesita al menos un producto");
         }
@@ -40,10 +42,10 @@ public class VentaService {
                         + producto.getStock() + " y se pidieron " + pedido);
             }
             lineas.add(new LineaVenta(producto.getId(), producto.getNombre(), producto.getCategoria(),
-                    producto.getPrecio(), item.getCantidad()));
+                    producto.getPrecio(), producto.getCostoSoles(), item.getCantidad()));
         }
 
-        Venta venta = new Venta(repositorio.siguienteId(), fechaHora, lineas, pago);
+        Venta venta = new Venta(repositorio.siguienteId(), fechaHora, sede, cliente, vendedor, lineas, pago);
 
         for (LineaVenta linea : lineas) {
             productos.buscar(linea.getProductoId()).descontarStock(linea.getCantidad());

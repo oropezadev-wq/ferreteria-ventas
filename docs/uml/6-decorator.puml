@@ -30,7 +30,7 @@ class MarcaAguaDecorador {
   - texto : String
   + getHtml() : String
 }
-class FirmaDecorador {
+class FirmaDigitalDecorador {
   + getHtml() : String
 }
 Reporte <|.. ReporteBase
@@ -38,5 +38,5 @@ Reporte <|.. DecoradorReporte
 DecoradorReporte o--> Reporte : envuelve
 DecoradorReporte <|-- SelloFerreteriaDecorador
 DecoradorReporte <|-- MarcaAguaDecorador
-DecoradorReporte <|-- FirmaDecorador
+DecoradorReporte <|-- FirmaDigitalDecorador
 @enduml

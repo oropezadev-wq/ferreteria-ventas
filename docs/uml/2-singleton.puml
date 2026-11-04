@@ -16,17 +16,22 @@ class ConfiguracionGlobal {
   - direccion : String
   - telefono : String
   - igv : BigDecimal
+  - tipoCambio : BigDecimal
   - ConfiguracionGlobal()
   + {static} getInstancia() : ConfiguracionGlobal
-  + actualizar(razonSocial, ruc, direccion, telefono, igv) : void
+  + actualizar(razonSocial, ruc, direccion, telefono, igv, tipoCambio) : void
+  + convertirASoles(dolares : BigDecimal) : BigDecimal
   + getRazonSocial() : String
   + getIgv() : BigDecimal
+  + getTipoCambio() : BigDecimal
 }
 ConfiguracionGlobal --> ConfiguracionGlobal : instancia
 class Venta
+class Producto
 class SelloFerreteriaDecorador
 class ConfiguracionController
-Venta ..> ConfiguracionGlobal : getInstancia()
+Venta ..> ConfiguracionGlobal : IGV
+Producto ..> ConfiguracionGlobal : tipo de cambio
 SelloFerreteriaDecorador ..> ConfiguracionGlobal : getInstancia()
 ConfiguracionController ..> ConfiguracionGlobal : getInstancia()
 @enduml

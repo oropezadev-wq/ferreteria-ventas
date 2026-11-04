@@ -41,7 +41,8 @@ public class ProductoController {
             return mostrarFormulario(modelo, form, null);
         }
         try {
-            productos.crear(form.getCodigo(), form.getNombre(), form.getCategoria(), form.getPrecio(),
+            productos.crear(form.getCodigo(), form.getNombre(), form.getDescripcion(), form.getCategoria(),
+                    form.getCostoDolares(), form.getPrecio(), form.getProveedor(), form.getFechaIngreso(),
                     form.getStock(), form.getStockMinimo());
             redireccion.addFlashAttribute("mensaje", "Producto registrado.");
             return "redirect:/productos";
@@ -63,7 +64,8 @@ public class ProductoController {
             return mostrarFormulario(modelo, form, id);
         }
         try {
-            productos.actualizar(id, form.getNombre(), form.getPrecio(), form.getStockMinimo());
+            productos.actualizar(id, form.getNombre(), form.getDescripcion(), form.getCostoDolares(), form.getPrecio(),
+                    form.getProveedor(), form.getStockMinimo());
             redireccion.addFlashAttribute("mensaje", "Producto actualizado.");
             return "redirect:/productos";
         } catch (IllegalArgumentException e) {

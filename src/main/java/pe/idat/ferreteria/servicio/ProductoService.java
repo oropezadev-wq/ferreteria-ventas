@@ -6,6 +6,7 @@ import pe.idat.ferreteria.modelo.Producto;
 import pe.idat.ferreteria.repositorio.ProductoRepositorio;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -28,22 +29,24 @@ public class ProductoService {
         return producto;
     }
 
-    public Producto crear(String codigo, String nombre, CategoriaProducto categoria, BigDecimal precio, int stock,
-                          int stockMinimo) {
+    public Producto crear(String codigo, String nombre, String descripcion, CategoriaProducto categoria,
+                          BigDecimal costoDolares, BigDecimal precio, String proveedor, LocalDate fechaIngreso,
+                          int stock, int stockMinimo) {
         for (Producto otro : repositorio.listar()) {
             if (otro.getCodigo().equalsIgnoreCase(codigo == null ? "" : codigo.trim())) {
                 throw new IllegalArgumentException("Ya existe un producto con el código " + codigo);
             }
         }
-        Producto producto = new Producto(repositorio.siguienteId(), codigo, nombre, categoria, precio, stock,
-                stockMinimo);
+        Producto producto = new Producto(repositorio.siguienteId(), codigo, nombre, descripcion, categoria,
+                costoDolares, precio, proveedor, fechaIngreso, stock, stockMinimo);
         repositorio.guardar(producto);
         return producto;
     }
 
-    public Producto actualizar(Long id, String nombre, BigDecimal precio, int stockMinimo) {
+    public Producto actualizar(Long id, String nombre, String descripcion, BigDecimal costoDolares, BigDecimal precio,
+                               String proveedor, int stockMinimo) {
         Producto producto = buscar(id);
-        producto.actualizar(nombre, precio, stockMinimo);
+        producto.actualizar(nombre, descripcion, costoDolares, precio, proveedor, stockMinimo);
         return producto;
     }
 

@@ -1,8 +1,10 @@
 package pe.idat.ferreteria.controlador.formulario;
 
+import pe.idat.ferreteria.modelo.Sede;
 import pe.idat.ferreteria.modelo.pago.Pago;
 import pe.idat.ferreteria.modelo.pago.PagoEfectivo;
 import pe.idat.ferreteria.modelo.pago.PagoTarjeta;
+import pe.idat.ferreteria.modelo.pago.PagoTransferencia;
 import pe.idat.ferreteria.modelo.pago.PagoYape;
 import pe.idat.ferreteria.servicio.ItemVenta;
 
@@ -12,10 +14,14 @@ import java.util.List;
 
 public class VentaForm {
     private List<Fila> filas = new ArrayList<>();
+    private Sede sede = Sede.LIMA;
+    private String cliente;
+    private String vendedor;
     private String metodoPago = "EFECTIVO";
     private BigDecimal montoRecibido;
     private String ultimosCuatro;
     private String celular;
+    private String numeroOperacion;
 
     public VentaForm() {
         for (int i = 0; i < 5; i++) {
@@ -40,6 +46,9 @@ public class VentaForm {
         if ("YAPE".equals(metodoPago)) {
             return new PagoYape(celular);
         }
+        if ("TRANSFERENCIA".equals(metodoPago)) {
+            return new PagoTransferencia(numeroOperacion);
+        }
         return new PagoEfectivo(montoRecibido);
     }
 
@@ -49,6 +58,30 @@ public class VentaForm {
 
     public void setFilas(List<Fila> filas) {
         this.filas = filas;
+    }
+
+    public Sede getSede() {
+        return sede;
+    }
+
+    public void setSede(Sede sede) {
+        this.sede = sede;
+    }
+
+    public String getCliente() {
+        return cliente;
+    }
+
+    public void setCliente(String cliente) {
+        this.cliente = cliente;
+    }
+
+    public String getVendedor() {
+        return vendedor;
+    }
+
+    public void setVendedor(String vendedor) {
+        this.vendedor = vendedor;
     }
 
     public String getMetodoPago() {
@@ -81,6 +114,14 @@ public class VentaForm {
 
     public void setCelular(String celular) {
         this.celular = celular;
+    }
+
+    public String getNumeroOperacion() {
+        return numeroOperacion;
+    }
+
+    public void setNumeroOperacion(String numeroOperacion) {
+        this.numeroOperacion = numeroOperacion;
     }
 
     public static class Fila {

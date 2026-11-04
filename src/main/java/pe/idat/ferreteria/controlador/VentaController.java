@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import pe.idat.ferreteria.controlador.formulario.VentaForm;
+import pe.idat.ferreteria.modelo.Sede;
 import pe.idat.ferreteria.modelo.Venta;
 import pe.idat.ferreteria.servicio.ProductoService;
 import pe.idat.ferreteria.servicio.VentaService;
@@ -43,7 +44,7 @@ public class VentaController {
             return mostrarFormulario(modelo, form, "Revise las cantidades y montos ingresados.");
         }
         try {
-            Venta venta = ventas.registrar(form.items(), form.pago());
+            Venta venta = ventas.registrar(form.items(), form.pago(), form.getSede(), form.getCliente(), form.getVendedor());
             return "redirect:/ventas/" + venta.getId();
         } catch (IllegalArgumentException e) {
             return mostrarFormulario(modelo, form, e.getMessage());
@@ -59,7 +60,8 @@ public class VentaController {
     private String mostrarFormulario(Model modelo, VentaForm form, String error) {
         modelo.addAttribute("formulario", form);
         modelo.addAttribute("productos", productos.listar());
-        modelo.addAttribute("metodos", List.of("EFECTIVO", "TARJETA", "YAPE"));
+        modelo.addAttribute("metodos", List.of("EFECTIVO", "TARJETA", "YAPE", "TRANSFERENCIA"));
+        modelo.addAttribute("sedes", Sede.values());
         modelo.addAttribute("error", error);
         return "ventas/nueva";
     }
