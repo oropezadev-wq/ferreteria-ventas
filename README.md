@@ -74,6 +74,13 @@ src/main/resources/templates   vistas (Thymeleaf)
 
 Los bocetos de las pantallas (versión computadora y celular) están en `docs/bocetos/ferreteria-bocetos.drawio`. Se abren en [app.diagrams.net](https://app.diagrams.net) o en draw.io; en modo vista, los botones del menú llevan a cada pantalla. En `docs/bocetos/png` están exportados como imagen.
 
+## Documentación
+
+- `docs/uml`: diagramas UML (paquetes, cada patrón y ventas).
+- `docs/bocetos`: bocetos navegables en draw.io.
+- `docs/capturas`: capturas de las pantallas del sistema.
+- `docs/usabilidad`: guion de las pruebas de usabilidad.
+
 ## Pruebas
 
 ```bash
