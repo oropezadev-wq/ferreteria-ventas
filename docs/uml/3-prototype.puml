@@ -1,0 +1,39 @@
+@startuml
+!pragma layout smetana
+skinparam classAttributeIconSize 0
+skinparam dpi 150
+skinparam shadowing false
+skinparam monochrome true
+skinparam defaultFontName Arial
+skinparam defaultFontSize 13
+skinparam packageStyle rectangle
+hide empty members
+title Patrón Prototype
+interface "Prototipo<T>" as Prototipo {
+  + copiar() : T
+}
+class PlantillaReporte {
+  - titulo : String
+  - granularidad : Granularidad
+  - secciones : List<SeccionPlantilla>
+  + PlantillaReporte(titulo, granularidad)
+  - PlantillaReporte(original : PlantillaReporte)
+  + copiar() : PlantillaReporte
+  + renombrar(nuevoTitulo) : PlantillaReporte
+  + conGranularidad(nueva) : PlantillaReporte
+  + agregarSeccion(seccion) : PlantillaReporte
+}
+class RegistroPlantillas {
+  - plantillas : Map<TipoReporte, PlantillaReporte>
+  + obtener(tipo : TipoReporte) : PlantillaReporte
+}
+enum Granularidad {
+  DIA
+  MES
+  ANIO
+  NINGUNA
+}
+Prototipo <|.. PlantillaReporte
+RegistroPlantillas o--> "*" PlantillaReporte : guarda originales
+PlantillaReporte --> Granularidad
+@enduml

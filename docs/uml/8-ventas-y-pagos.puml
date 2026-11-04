@@ -1,0 +1,71 @@
+@startuml
+!pragma layout smetana
+skinparam classAttributeIconSize 0
+skinparam dpi 150
+skinparam shadowing false
+skinparam monochrome true
+skinparam defaultFontName Arial
+skinparam defaultFontSize 13
+skinparam packageStyle rectangle
+hide empty members
+title Ventas y pagos
+class Venta {
+  - id : Long
+  - numero : String
+  - fechaHora : LocalDateTime
+  + getTotal() : BigDecimal
+  + getOpGravada() : BigDecimal
+  + getIgv() : BigDecimal
+}
+class LineaVenta {
+  - producto : String
+  - precioUnitario : BigDecimal
+  - cantidad : int
+  + getSubtotal() : BigDecimal
+}
+class Producto {
+  - codigo : String
+  - nombre : String
+  - precio : BigDecimal
+  - stock : int
+  - stockMinimo : int
+  + descontarStock(cantidad) : void
+  + reponerStock(cantidad) : void
+  + estaBajoMinimo() : boolean
+}
+enum CategoriaProducto {
+  HERRAMIENTAS
+  CONSTRUCCION
+  ELECTRICIDAD
+  GASFITERIA
+  PINTURAS
+}
+abstract class Pago {
+  + {abstract} validar(total : BigDecimal) : void
+  + {abstract} descripcion(total : BigDecimal) : String
+}
+class PagoEfectivo {
+  - recibido : BigDecimal
+  + vuelto(total) : BigDecimal
+}
+class PagoTarjeta {
+  - ultimosCuatro : String
+}
+class PagoYape {
+  - celular : String
+}
+class VentaService {
+  + registrar(items, pago) : Venta
+  + listar() : List<Venta>
+  + buscar(id) : Venta
+}
+Venta *--> "1..*" LineaVenta
+Venta --> "1" Pago
+LineaVenta --> CategoriaProducto
+Producto --> CategoriaProducto
+Pago <|-- PagoEfectivo
+Pago <|-- PagoTarjeta
+Pago <|-- PagoYape
+VentaService ..> Venta : crea
+VentaService ..> Producto : descuenta stock
+@enduml

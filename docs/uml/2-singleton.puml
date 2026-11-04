@@ -1,0 +1,32 @@
+@startuml
+!pragma layout smetana
+skinparam classAttributeIconSize 0
+skinparam dpi 150
+skinparam shadowing false
+skinparam monochrome true
+skinparam defaultFontName Arial
+skinparam defaultFontSize 13
+skinparam packageStyle rectangle
+hide empty members
+title Patrón Singleton
+class ConfiguracionGlobal {
+  - {static} instancia : ConfiguracionGlobal
+  - razonSocial : String
+  - ruc : String
+  - direccion : String
+  - telefono : String
+  - igv : BigDecimal
+  - ConfiguracionGlobal()
+  + {static} getInstancia() : ConfiguracionGlobal
+  + actualizar(razonSocial, ruc, direccion, telefono, igv) : void
+  + getRazonSocial() : String
+  + getIgv() : BigDecimal
+}
+ConfiguracionGlobal --> ConfiguracionGlobal : instancia
+class Venta
+class SelloFerreteriaDecorador
+class ConfiguracionController
+Venta ..> ConfiguracionGlobal : getInstancia()
+SelloFerreteriaDecorador ..> ConfiguracionGlobal : getInstancia()
+ConfiguracionController ..> ConfiguracionGlobal : getInstancia()
+@enduml

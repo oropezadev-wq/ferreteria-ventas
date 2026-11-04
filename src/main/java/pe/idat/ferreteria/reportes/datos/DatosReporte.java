@@ -41,7 +41,7 @@ public class DatosReporte {
     public Map<String, BigDecimal> totalPorCategoria(List<Venta> lista) {
         Map<String, BigDecimal> totales = new LinkedHashMap<>();
         for (CategoriaProducto categoria : CategoriaProducto.values()) {
-            totales.put(categoria.getNombre(), BigDecimal.ZERO);
+            totales.put(categoria.getNombre(), new BigDecimal("0.00"));
         }
         for (Venta venta : lista) {
             for (LineaVenta linea : venta.getLineas()) {

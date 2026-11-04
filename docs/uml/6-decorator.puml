@@ -1,0 +1,42 @@
+@startuml
+!pragma layout smetana
+skinparam classAttributeIconSize 0
+skinparam dpi 150
+skinparam shadowing false
+skinparam monochrome true
+skinparam defaultFontName Arial
+skinparam defaultFontSize 13
+skinparam packageStyle rectangle
+hide empty members
+title Patrón Decorator
+interface Reporte {
+  + getTitulo() : String
+  + getHtml() : String
+}
+class ReporteBase {
+  - titulo : String
+  - subtitulo : String
+  - secciones : List<Seccion>
+  + getHtml() : String
+}
+abstract class DecoradorReporte {
+  # reporte : Reporte
+  + getTitulo() : String
+}
+class SelloFerreteriaDecorador {
+  + getHtml() : String
+}
+class MarcaAguaDecorador {
+  - texto : String
+  + getHtml() : String
+}
+class FirmaDecorador {
+  + getHtml() : String
+}
+Reporte <|.. ReporteBase
+Reporte <|.. DecoradorReporte
+DecoradorReporte o--> Reporte : envuelve
+DecoradorReporte <|-- SelloFerreteriaDecorador
+DecoradorReporte <|-- MarcaAguaDecorador
+DecoradorReporte <|-- FirmaDecorador
+@enduml

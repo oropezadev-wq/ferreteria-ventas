@@ -1,0 +1,29 @@
+@startuml
+!pragma layout smetana
+skinparam classAttributeIconSize 0
+skinparam dpi 150
+skinparam shadowing false
+skinparam monochrome true
+skinparam defaultFontName Arial
+skinparam defaultFontSize 13
+skinparam packageStyle rectangle
+hide empty members
+title Patrón Facade
+class ReporteController
+class ReporteFacade {
+  - plantillas : RegistroPlantillas
+  - director : DirectorReporte
+  + generarReporte(tipo, fecha, conSello, marcaAgua, conFirma) : Reporte
+}
+class RegistroPlantillas
+class DirectorReporte
+class SelloFerreteriaDecorador
+class MarcaAguaDecorador
+class FirmaDecorador
+ReporteController --> ReporteFacade : un solo método
+ReporteFacade --> RegistroPlantillas : 1. Prototype
+ReporteFacade --> DirectorReporte : 2. Builder y Composite
+ReporteFacade ..> SelloFerreteriaDecorador : 3. Decorator
+ReporteFacade ..> MarcaAguaDecorador
+ReporteFacade ..> FirmaDecorador
+@enduml

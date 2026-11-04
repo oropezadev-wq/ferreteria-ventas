@@ -1,0 +1,43 @@
+@startuml
+!pragma layout smetana
+skinparam classAttributeIconSize 0
+skinparam dpi 150
+skinparam shadowing false
+skinparam monochrome true
+skinparam defaultFontName Arial
+skinparam defaultFontSize 13
+skinparam packageStyle rectangle
+hide empty members
+title Patrón Builder
+class DirectorReporte {
+  - datos : DatosReporte
+  + construir(plantilla : PlantillaReporte, fecha : LocalDate) : Reporte
+}
+class ReporteBuilder {
+  - titulo : String
+  - subtitulo : String
+  - secciones : List<Seccion>
+  - seccionActual : Seccion
+  + ReporteBuilder(titulo)
+  + subtitulo(texto) : ReporteBuilder
+  + seccion(titulo) : ReporteBuilder
+  + parrafo(texto) : ReporteBuilder
+  + tabla(encabezados, filas) : ReporteBuilder
+  + grafico(titulo, valores) : ReporteBuilder
+  + build() : Reporte
+}
+interface Reporte {
+  + getTitulo() : String
+  + getHtml() : String
+}
+class ReporteBase
+class DatosReporte {
+  + ventasEntre(desde, hasta) : List<Venta>
+  + totalPorCategoria(ventas) : Map<String, BigDecimal>
+  + productos() : List<Producto>
+}
+DirectorReporte --> DatosReporte
+DirectorReporte ..> ReporteBuilder : usa
+ReporteBuilder ..> ReporteBase : crea
+Reporte <|.. ReporteBase
+@enduml

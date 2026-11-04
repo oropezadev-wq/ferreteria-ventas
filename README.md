@@ -76,4 +76,4 @@ src/main/resources/templates   vistas (Thymeleaf)
 ./mvnw test
 ```
 
-Hay una prueba sencilla por patrón, una del cálculo de la venta y otra que verifica que la aplicación arranca.
+Hay una prueba sencilla por cada patrón, dos de la venta (total con IGV y pago insuficiente) y otra que verifica que la aplicación arranca.
