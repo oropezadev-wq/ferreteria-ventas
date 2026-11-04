@@ -70,6 +70,10 @@ src/main/resources/templates   vistas (Thymeleaf)
 | Decorator | Estructural | `reportes/decorador` | Agregar sello, marca de agua y firma sin cambiar el reporte |
 | Facade | Estructural | `reportes/fachada` | Un solo método para generar cualquier reporte |
 
+## Bocetos
+
+Los bocetos de las pantallas (versión computadora y celular) están en `docs/bocetos/ferreteria-bocetos.drawio`. Se abren en [app.diagrams.net](https://app.diagrams.net) o en draw.io; en modo vista, los botones del menú llevan a cada pantalla. En `docs/bocetos/png` están exportados como imagen.
+
 ## Pruebas
 
 ```bash
