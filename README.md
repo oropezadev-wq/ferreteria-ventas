@@ -1,6 +1,6 @@
 # Gestor de ventas de ferretería
 
-Aplicación web hecha con Java y Spring Boot para una ferretería: registro de productos, ventas con efectivo, tarjeta o Yape, y reportes de ventas e inventario.
+Aplicación web hecha con Java y Spring Boot para una ferretería con varias sedes (Lima, Arequipa y Trujillo): registro de productos comprados en dólares, ventas con efectivo, tarjeta, Yape o transferencia, y reportes de ingresos, gastos e inventario de todas las sedes juntas.
 
 Proyecto del curso **Patrones de Diseño de Software** (IDAT). La tienda "Ferretería El Constructor S.A.C." y su RUC son inventados.
 
@@ -11,7 +11,7 @@ Proyecto del curso **Patrones de Diseño de Software** (IDAT). La tienda "Ferret
 - Bootstrap 5 (copia local en `static/vendor`)
 - Maven (incluido con `mvnw`)
 
-Los datos se guardan **en memoria** (listas en Java), sin base de datos. Al arrancar se cargan 15 productos y 30 ventas de ejemplo.
+Los datos se guardan **en memoria** (listas en Java), sin base de datos. Al arrancar se cargan 15 productos y 30 ventas de ejemplo repartidas en las 3 sedes.
 
 ## Cómo correrlo
 
@@ -40,7 +40,7 @@ Si el puerto 8080 está ocupado, usar otro: `.\mvnw spring-boot:run "-Dspring-bo
 src/main/java/pe/idat/ferreteria
 ├── configuracion/     ConfiguracionGlobal (Singleton) y DatosIniciales
 ├── modelo/            Producto, Venta, LineaVenta, CategoriaProducto
-│   └── pago/          Pago, PagoEfectivo, PagoTarjeta, PagoYape
+│   └── pago/          Pago, PagoEfectivo, PagoTarjeta, PagoYape, PagoTransferencia
 ├── repositorio/       ProductoRepositorio, VentaRepositorio (en memoria)
 ├── servicio/          ProductoService, VentaService
 ├── controlador/       controladores de cada pantalla y formularios
@@ -63,7 +63,7 @@ src/main/resources/templates   vistas (Thymeleaf)
 
 | Patrón | Tipo | Dónde | Para qué |
 |---|---|---|---|
-| Singleton | Creacional | `configuracion/ConfiguracionGlobal` | Una sola configuración de la tienda (razón social, RUC, IGV) para todo el sistema |
+| Singleton | Creacional | `configuracion/ConfiguracionGlobal` | Una sola configuración de la tienda (razón social, RUC, IGV y tipo de cambio) para todo el sistema |
 | Prototype | Creacional | `reportes/prototipo` | Las plantillas de reporte se clonan en vez de crearse desde cero |
 | Builder | Creacional | `reportes/builder` | Armar el reporte paso a paso |
 | Composite | Estructural | `reportes/composite` | Secciones que contienen párrafos, tablas, gráficos u otras secciones |
@@ -81,10 +81,17 @@ Los bocetos de las pantallas (versión computadora y celular) están en `docs/bo
 - `docs/capturas`: capturas de las pantallas del sistema.
 - `docs/usabilidad`: guion de las pruebas de usabilidad.
 
+## Cómo usarlo
+
+1. **Productos:** registrar un producto con su costo en dólares; el sistema muestra el costo en soles con el tipo de cambio.
+2. **Nueva venta:** elegir la sede, el cliente, el vendedor, los productos y el método de pago. El stock se descuenta solo.
+3. **Reportes:** elegir el tipo (día, mes, trimestre, año o inventario), la fecha y si lleva sello, marca de agua o firma digital.
+4. **Configuración:** cambiar los datos de la tienda, el IGV y el tipo de cambio.
+
 ## Pruebas
 
 ```bash
 ./mvnw test
 ```
 
-Hay una prueba sencilla por cada patrón, dos de la venta (total con IGV y pago insuficiente) y otra que verifica que la aplicación arranca.
+Hay 12 pruebas: una o más por cada patrón (incluidas la conversión de moneda, las subsecciones y el reporte trimestral), tres de la venta (total, IGV y costo; pago insuficiente; transferencia) y otra que verifica que la aplicación arranca.

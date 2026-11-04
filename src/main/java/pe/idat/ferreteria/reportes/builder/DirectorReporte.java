@@ -1,6 +1,7 @@
 package pe.idat.ferreteria.reportes.builder;
 
 import org.springframework.stereotype.Component;
+import pe.idat.ferreteria.configuracion.ConfiguracionGlobal;
 import pe.idat.ferreteria.modelo.LineaVenta;
 import pe.idat.ferreteria.modelo.Producto;
 import pe.idat.ferreteria.modelo.Venta;
@@ -34,6 +35,11 @@ public class DirectorReporte {
                 desde = fecha.withDayOfMonth(1);
                 hasta = fecha.withDayOfMonth(fecha.lengthOfMonth());
             }
+            case TRIMESTRE -> {
+                int primerMes = ((fecha.getMonthValue() - 1) / 3) * 3 + 1;
+                desde = fecha.withMonth(primerMes).withDayOfMonth(1);
+                hasta = desde.plusMonths(3).minusDays(1);
+            }
             case ANIO -> {
                 desde = fecha.withDayOfYear(1);
                 hasta = fecha.withDayOfYear(fecha.lengthOfYear());
@@ -44,42 +50,56 @@ public class DirectorReporte {
 
         ReporteBuilder builder = new ReporteBuilder(plantilla.getTitulo());
         if (desde.equals(hasta)) {
-            builder.subtitulo("Fecha: " + desde.format(FECHA));
+            builder.subtitulo("Fecha: " + desde.format(FECHA) + " - Todas las sedes - Montos en soles");
         } else {
-            builder.subtitulo("Del " + desde.format(FECHA) + " al " + hasta.format(FECHA));
+            builder.subtitulo("Del " + desde.format(FECHA) + " al " + hasta.format(FECHA)
+                    + " - Todas las sedes - Montos en soles");
         }
 
         List<Venta> ventas = datos.ventasEntre(desde, hasta);
         for (SeccionPlantilla seccion : plantilla.getSecciones()) {
             switch (seccion) {
                 case RESUMEN -> agregarResumen(builder, ventas);
-                case VENTAS_POR_CATEGORIA -> agregarVentasPorCategoria(builder, ventas);
+                case INGRESOS -> agregarIngresos(builder, ventas);
+                case GASTOS -> agregarGastos(builder, ventas);
                 case DETALLE_VENTAS -> agregarDetalleVentas(builder, ventas);
                 case INVENTARIO -> agregarInventario(builder);
+                case CONCLUSIONES -> agregarConclusiones(builder, ventas);
             }
         }
         return builder.build();
     }
 
     private void agregarResumen(ReporteBuilder builder, List<Venta> ventas) {
-        BigDecimal total = BigDecimal.ZERO;
-        for (Venta venta : ventas) {
-            total = total.add(venta.getTotal());
-        }
         builder.seccion("Resumen")
                 .parrafo("Ventas registradas: " + ventas.size())
-                .parrafo("Total vendido: S/ " + total);
+                .parrafo("Total vendido: S/ " + total(ventas));
     }
 
-    private void agregarVentasPorCategoria(ReporteBuilder builder, List<Venta> ventas) {
-        Map<String, BigDecimal> totales = datos.totalPorCategoria(ventas);
-        List<List<String>> filas = new ArrayList<>();
-        for (Map.Entry<String, BigDecimal> entrada : totales.entrySet()) {
-            filas.add(List.of(entrada.getKey(), "S/ " + entrada.getValue()));
+    // Composite: la sección "Ingresos" tiene dos subsecciones
+    private void agregarIngresos(ReporteBuilder builder, List<Venta> ventas) {
+        Map<String, BigDecimal> porSede = datos.totalPorSede(ventas);
+        Map<String, BigDecimal> porCategoria = datos.totalPorCategoria(ventas);
+        builder.seccion("Ingresos")
+                .subseccion("Ingresos por sede")
+                .tabla(List.of("Sede", "Total"), filas(porSede))
+                .grafico("Comparación por sede", porSede)
+                .subseccion("Ingresos por categoría")
+                .tabla(List.of("Categoría", "Total"), filas(porCategoria))
+                .grafico("Comparación por categoría", porCategoria);
+    }
+
+    private void agregarGastos(ReporteBuilder builder, List<Venta> ventas) {
+        BigDecimal costo = BigDecimal.ZERO;
+        for (Venta venta : ventas) {
+            costo = costo.add(venta.getCosto());
         }
-        builder.seccion("Ventas por categoría")
-                .tabla(List.of("Categoría", "Total"), filas)
-                .grafico("Total por categoría", totales);
+        BigDecimal tipoCambio = ConfiguracionGlobal.getInstancia().getTipoCambio();
+        builder.seccion("Gastos de compra")
+                .parrafo("Los productos se compran en dólares y se pasan a soles con el tipo de cambio S/ " + tipoCambio)
+                .tabla(List.of("Categoría", "Costo de lo vendido"), filas(datos.costoPorCategoria(ventas)))
+                .parrafo("Total de gastos: S/ " + costo)
+                .parrafo("Ganancia (ingresos - gastos): S/ " + total(ventas).subtract(costo));
     }
 
     private void agregarDetalleVentas(ReporteBuilder builder, List<Venta> ventas) {
@@ -87,11 +107,12 @@ public class DirectorReporte {
         for (Venta venta : ventas) {
             for (LineaVenta linea : venta.getLineas()) {
                 filas.add(List.of(venta.getFechaHora().toLocalDate().format(FECHA), venta.getNumero(),
-                        linea.getProducto(), String.valueOf(linea.getCantidad()), "S/ " + linea.getSubtotal()));
+                        venta.getSede().getNombre(), linea.getProducto(), String.valueOf(linea.getCantidad()),
+                        "S/ " + linea.getSubtotal()));
             }
         }
         builder.seccion("Detalle de ventas")
-                .tabla(List.of("Fecha", "N.º", "Producto", "Cantidad", "Subtotal"), filas);
+                .tabla(List.of("Fecha", "N.º", "Sede", "Producto", "Cantidad", "Subtotal"), filas);
     }
 
     private void agregarInventario(ReporteBuilder builder) {
@@ -99,17 +120,55 @@ public class DirectorReporte {
         BigDecimal totalValorizado = BigDecimal.ZERO;
         int bajoMinimo = 0;
         for (Producto producto : datos.productos()) {
-            BigDecimal valorizado = producto.getPrecio().multiply(BigDecimal.valueOf(producto.getStock()));
+            BigDecimal valorizado = producto.getCostoSoles().multiply(BigDecimal.valueOf(producto.getStock()));
             totalValorizado = totalValorizado.add(valorizado);
             if (producto.estaBajoMinimo()) {
                 bajoMinimo++;
             }
             filas.add(List.of(producto.getCodigo(), producto.getNombre(), String.valueOf(producto.getStock()),
-                    "S/ " + producto.getPrecio(), "S/ " + valorizado));
+                    "US$ " + producto.getCostoDolares(), "S/ " + producto.getCostoSoles(), "S/ " + valorizado));
         }
         builder.seccion("Inventario")
-                .tabla(List.of("Código", "Producto", "Stock", "Precio", "Valorizado"), filas)
-                .parrafo("Valor total del inventario: S/ " + totalValorizado)
+                .tabla(List.of("Código", "Producto", "Stock", "Costo (US$)", "Costo (S/)", "Valorizado"), filas)
+                .parrafo("Valor total del inventario (al costo): S/ " + totalValorizado)
                 .parrafo("Productos bajo el stock mínimo: " + bajoMinimo);
+    }
+
+    private void agregarConclusiones(ReporteBuilder builder, List<Venta> ventas) {
+        builder.seccion("Conclusiones");
+        if (ventas.isEmpty()) {
+            builder.parrafo("No hubo ventas en este período.");
+            return;
+        }
+        builder.parrafo("La sede con más ingresos fue " + mayor(datos.totalPorSede(ventas)) + ".")
+                .parrafo("La categoría con más ingresos fue " + mayor(datos.totalPorCategoria(ventas)) + ".");
+    }
+
+    private BigDecimal total(List<Venta> ventas) {
+        BigDecimal total = BigDecimal.ZERO;
+        for (Venta venta : ventas) {
+            total = total.add(venta.getTotal());
+        }
+        return total;
+    }
+
+    private List<List<String>> filas(Map<String, BigDecimal> valores) {
+        List<List<String>> filas = new ArrayList<>();
+        for (Map.Entry<String, BigDecimal> entrada : valores.entrySet()) {
+            filas.add(List.of(entrada.getKey(), "S/ " + entrada.getValue()));
+        }
+        return filas;
+    }
+
+    private String mayor(Map<String, BigDecimal> valores) {
+        String nombre = "";
+        BigDecimal maximo = null;
+        for (Map.Entry<String, BigDecimal> entrada : valores.entrySet()) {
+            if (maximo == null || entrada.getValue().compareTo(maximo) > 0) {
+                maximo = entrada.getValue();
+                nombre = entrada.getKey();
+            }
+        }
+        return nombre + " (S/ " + maximo + ")";
     }
 }

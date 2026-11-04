@@ -13,7 +13,12 @@
                 <span th:text="${tienda?.direccion}">Av. Ejemplo 123</span>
             </p>
             <p class="mb-1"><strong>Ticket</strong> <span th:text="${venta.numero}">V-000001</span></p>
-            <p class="mb-3 small" th:text="${#temporals.format(venta.fechaHora, 'dd/MM/yyyy HH:mm')}">21/10/2026 10:00</p>
+            <p class="mb-1 small" th:text="${#temporals.format(venta.fechaHora, 'dd/MM/yyyy HH:mm')}">21/10/2026 10:00</p>
+            <p class="mb-3 small">
+                Sede: <span th:text="${venta.sede.nombre}">Lima</span><br>
+                Cliente: <span th:text="${venta.cliente}">Cliente general</span><br>
+                Vendedor: <span th:text="${venta.vendedor}">Vendedor</span>
+            </p>
 
             <table class="table table-sm">
                 <thead>

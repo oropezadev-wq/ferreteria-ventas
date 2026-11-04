@@ -13,25 +13,35 @@ class Venta {
   - id : Long
   - numero : String
   - fechaHora : LocalDateTime
+  - cliente : String
+  - vendedor : String
   + getTotal() : BigDecimal
+  + getCosto() : BigDecimal
   + getOpGravada() : BigDecimal
   + getIgv() : BigDecimal
 }
 class LineaVenta {
   - producto : String
   - precioUnitario : BigDecimal
+  - costoUnitario : BigDecimal
   - cantidad : int
   + getSubtotal() : BigDecimal
+  + getCostoTotal() : BigDecimal
 }
 class Producto {
   - codigo : String
   - nombre : String
+  - descripcion : String
+  - costoDolares : BigDecimal
   - precio : BigDecimal
+  - proveedor : String
+  - fechaIngreso : LocalDate
   - stock : int
   - stockMinimo : int
   + descontarStock(cantidad) : void
   + reponerStock(cantidad) : void
   + estaBajoMinimo() : boolean
+  + getCostoSoles() : BigDecimal
 }
 enum CategoriaProducto {
   HERRAMIENTAS
@@ -54,8 +64,16 @@ class PagoTarjeta {
 class PagoYape {
   - celular : String
 }
+class PagoTransferencia {
+  - numeroOperacion : String
+}
+enum Sede {
+  LIMA
+  AREQUIPA
+  TRUJILLO
+}
 class VentaService {
-  + registrar(items, pago) : Venta
+  + registrar(items, pago, sede, cliente, vendedor) : Venta
   + listar() : List<Venta>
   + buscar(id) : Venta
 }
@@ -66,6 +84,8 @@ Producto --> CategoriaProducto
 Pago <|-- PagoEfectivo
 Pago <|-- PagoTarjeta
 Pago <|-- PagoYape
+Pago <|-- PagoTransferencia
+Venta --> Sede
 VentaService ..> Venta : crea
 VentaService ..> Producto : descuenta stock
 @enduml

@@ -19,11 +19,11 @@ class RegistroPlantillas
 class DirectorReporte
 class SelloFerreteriaDecorador
 class MarcaAguaDecorador
-class FirmaDecorador
+class FirmaDigitalDecorador
 ReporteController --> ReporteFacade : un solo método
 ReporteFacade --> RegistroPlantillas : 1. Prototype
 ReporteFacade --> DirectorReporte : 2. Builder y Composite
 ReporteFacade ..> SelloFerreteriaDecorador : 3. Decorator
 ReporteFacade ..> MarcaAguaDecorador
-ReporteFacade ..> FirmaDecorador
+ReporteFacade ..> FirmaDigitalDecorador
 @enduml

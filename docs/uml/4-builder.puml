@@ -18,9 +18,11 @@ class ReporteBuilder {
   - subtitulo : String
   - secciones : List<Seccion>
   - seccionActual : Seccion
+  - destino : Seccion
   + ReporteBuilder(titulo)
   + subtitulo(texto) : ReporteBuilder
   + seccion(titulo) : ReporteBuilder
+  + subseccion(titulo) : ReporteBuilder
   + parrafo(texto) : ReporteBuilder
   + tabla(encabezados, filas) : ReporteBuilder
   + grafico(titulo, valores) : ReporteBuilder
@@ -33,7 +35,9 @@ interface Reporte {
 class ReporteBase
 class DatosReporte {
   + ventasEntre(desde, hasta) : List<Venta>
+  + totalPorSede(ventas) : Map<String, BigDecimal>
   + totalPorCategoria(ventas) : Map<String, BigDecimal>
+  + costoPorCategoria(ventas) : Map<String, BigDecimal>
   + productos() : List<Producto>
 }
 DirectorReporte --> DatosReporte

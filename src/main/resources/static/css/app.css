@@ -8,6 +8,13 @@
 .reporte section {
     margin: 1rem 0 0 .75rem;
 }
+.reporte section section h2 {
+    font-size: 1.15rem;
+}
+.reporte .grafico h3 {
+    font-size: 1rem;
+    font-weight: 600;
+}
 .reporte .subtitulo {
     color: #6c757d;
 }

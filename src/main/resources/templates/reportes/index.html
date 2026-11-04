@@ -20,12 +20,14 @@
         </div>
         <div class="col-6 col-md-3">
             <label for="fecha" class="form-label">Fecha</label>
-            <input type="date" class="form-control" id="fecha" name="fecha" th:value="${fecha}" required>
+            <input type="date" class="form-control" id="fecha" name="fecha" th:value="${fecha}" required aria-describedby="ayudaFecha">
+            <div id="ayudaFecha" class="form-text">Diario: ese día. Mensual: todo el mes. Trimestral: el trimestre. Anual: todo el año.</div>
         </div>
         <div class="col-6 col-md-5">
             <label for="marcaAgua" class="form-label">Marca de agua (opcional)</label>
             <input type="text" class="form-control" id="marcaAgua" name="marcaAgua" th:value="${marcaAgua}"
-                   maxlength="30" placeholder="CONFIDENCIAL">
+                   maxlength="30" placeholder="CONFIDENCIAL" aria-describedby="ayudaMarca">
+            <div id="ayudaMarca" class="form-text">Texto que aparece de fondo en el reporte.</div>
         </div>
         <div class="col-12 d-flex flex-wrap gap-4">
             <div class="form-check">
@@ -34,7 +36,7 @@
             </div>
             <div class="form-check">
                 <input class="form-check-input" type="checkbox" id="conFirma" name="conFirma" value="true" th:checked="${conFirma}">
-                <label class="form-check-label" for="conFirma">Firma del administrador</label>
+                <label class="form-check-label" for="conFirma">Firma digital</label>
             </div>
         </div>
         <div class="col-12">

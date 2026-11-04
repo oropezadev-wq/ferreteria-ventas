@@ -19,6 +19,7 @@ import pe.idat.ferreteria.reportes.prototipo.RegistroPlantillas;
 import pe.idat.ferreteria.repositorio.ProductoRepositorio;
 import pe.idat.ferreteria.repositorio.VentaRepositorio;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -81,5 +82,35 @@ class PatronesTest {
         assertTrue(html.contains("class=\"sello\""));
         assertTrue(html.contains("class=\"marca-agua\""));
         assertTrue(html.contains("class=\"firma\""));
+    }
+
+    @Test
+    void singletonConvierteDolaresASoles() {
+        // con el tipo de cambio por defecto: 3.75
+        assertEquals(new BigDecimal("37.50"), ConfiguracionGlobal.getInstancia().convertirASoles(new BigDecimal("10")));
+    }
+
+    @Test
+    void builderArmaSubseccionesDentroDeUnaSeccion() {
+        String html = new ReporteBuilder("Prueba")
+                .seccion("Ingresos")
+                .subseccion("Por sede")
+                .parrafo("Lima")
+                .build()
+                .getHtml();
+
+        assertTrue(html.contains("<section><h2>Ingresos</h2><section><h2>Por sede</h2><p>Lima</p></section></section>"));
+    }
+
+    @Test
+    void reporteTrimestralTieneIngresosGastosYConclusiones() {
+        DatosReporte datos = new DatosReporte(new VentaRepositorio(), new ProductoRepositorio());
+        ReporteFacade facade = new ReporteFacade(new RegistroPlantillas(), new DirectorReporte(datos));
+
+        String html = facade.generarReporte(TipoReporte.VENTAS_TRIMESTRAL, LocalDate.now(), false, "", false).getHtml();
+
+        assertTrue(html.contains("Ingresos por sede"));
+        assertTrue(html.contains("Gastos de compra"));
+        assertTrue(html.contains("Conclusiones"));
     }
 }

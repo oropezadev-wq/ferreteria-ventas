@@ -2,7 +2,7 @@ package pe.idat.ferreteria.reportes.fachada;
 
 import org.springframework.stereotype.Service;
 import pe.idat.ferreteria.reportes.builder.DirectorReporte;
-import pe.idat.ferreteria.reportes.decorador.FirmaDecorador;
+import pe.idat.ferreteria.reportes.decorador.FirmaDigitalDecorador;
 import pe.idat.ferreteria.reportes.decorador.MarcaAguaDecorador;
 import pe.idat.ferreteria.reportes.decorador.SelloFerreteriaDecorador;
 import pe.idat.ferreteria.reportes.modelo.Reporte;
@@ -43,7 +43,7 @@ public class ReporteFacade {
             reporte = new MarcaAguaDecorador(reporte, marcaAgua.trim());
         }
         if (conFirma) {
-            reporte = new FirmaDecorador(reporte);
+            reporte = new FirmaDigitalDecorador(reporte);
         }
         return reporte;
     }

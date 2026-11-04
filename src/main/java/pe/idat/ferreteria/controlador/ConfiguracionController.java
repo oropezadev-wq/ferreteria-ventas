@@ -22,9 +22,10 @@ public class ConfiguracionController {
     @PostMapping
     public String guardar(@RequestParam String razonSocial, @RequestParam String ruc, @RequestParam String direccion,
                           @RequestParam String telefono, @RequestParam(required = false) BigDecimal igv,
+                          @RequestParam(required = false) BigDecimal tipoCambio,
                           Model modelo, RedirectAttributes redireccion) {
         try {
-            ConfiguracionGlobal.getInstancia().actualizar(razonSocial, ruc, direccion, telefono, igv);
+            ConfiguracionGlobal.getInstancia().actualizar(razonSocial, ruc, direccion, telefono, igv, tipoCambio);
             redireccion.addFlashAttribute("mensaje", "Configuración guardada.");
             return "redirect:/configuracion";
         } catch (IllegalArgumentException e) {

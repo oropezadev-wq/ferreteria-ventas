@@ -14,16 +14,25 @@ public class RegistroPlantillas {
 
     public RegistroPlantillas() {
         PlantillaReporte base = new PlantillaReporte("Reporte de ventas", Granularidad.DIA)
-                .agregarSeccion(SeccionPlantilla.RESUMEN)
-                .agregarSeccion(SeccionPlantilla.DETALLE_VENTAS);
+                .agregarSeccion(SeccionPlantilla.RESUMEN);
 
-        plantillas.put(TipoReporte.VENTAS_DIARIO, base.copiar().renombrar("Ventas del día"));
-        plantillas.put(TipoReporte.VENTAS_MENSUAL, base.copiar().renombrar("Ventas del mes")
+        plantillas.put(TipoReporte.VENTAS_DIARIO, base.copiar().renombrar("Ventas del día")
+                .agregarSeccion(SeccionPlantilla.DETALLE_VENTAS));
+        plantillas.put(TipoReporte.VENTAS_MENSUAL, base.copiar().renombrar("Reporte mensual de ingresos")
                 .conGranularidad(Granularidad.MES)
-                .agregarSeccion(SeccionPlantilla.VENTAS_POR_CATEGORIA));
-        plantillas.put(TipoReporte.VENTAS_ANUAL, base.copiar().renombrar("Ventas del año")
+                .agregarSeccion(SeccionPlantilla.INGRESOS)
+                .agregarSeccion(SeccionPlantilla.DETALLE_VENTAS)
+                .agregarSeccion(SeccionPlantilla.CONCLUSIONES));
+        plantillas.put(TipoReporte.VENTAS_TRIMESTRAL, base.copiar().renombrar("Reporte trimestral de ingresos y gastos")
+                .conGranularidad(Granularidad.TRIMESTRE)
+                .agregarSeccion(SeccionPlantilla.INGRESOS)
+                .agregarSeccion(SeccionPlantilla.GASTOS)
+                .agregarSeccion(SeccionPlantilla.CONCLUSIONES));
+        plantillas.put(TipoReporte.VENTAS_ANUAL, base.copiar().renombrar("Reporte anual consolidado")
                 .conGranularidad(Granularidad.ANIO)
-                .agregarSeccion(SeccionPlantilla.VENTAS_POR_CATEGORIA));
+                .agregarSeccion(SeccionPlantilla.INGRESOS)
+                .agregarSeccion(SeccionPlantilla.GASTOS)
+                .agregarSeccion(SeccionPlantilla.CONCLUSIONES));
         plantillas.put(TipoReporte.INVENTARIO_VALORIZADO,
                 new PlantillaReporte("Inventario valorizado", Granularidad.NINGUNA)
                         .agregarSeccion(SeccionPlantilla.INVENTARIO));

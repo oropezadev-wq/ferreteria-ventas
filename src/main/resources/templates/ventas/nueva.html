@@ -10,6 +10,23 @@
     <div th:if="${error}" class="alert alert-danger" role="alert" th:text="${error}">Error</div>
 
     <form th:action="@{/ventas}" th:object="${formulario}" method="post">
+        <div class="row g-3 mb-3">
+            <div class="col-12 col-md-3">
+                <label for="sede" class="form-label">Sede</label>
+                <select class="form-select" th:field="*{sede}">
+                    <option th:each="s : ${sedes}" th:value="${s}" th:text="${s.nombre}">Lima</option>
+                </select>
+            </div>
+            <div class="col-12 col-md-5">
+                <label for="cliente" class="form-label">Cliente</label>
+                <input type="text" class="form-control" th:field="*{cliente}" maxlength="100" placeholder="Cliente general">
+            </div>
+            <div class="col-12 col-md-4">
+                <label for="vendedor" class="form-label">Vendedor</label>
+                <input type="text" class="form-control" th:field="*{vendedor}" maxlength="60">
+            </div>
+        </div>
+
         <h2 class="h5">Productos</h2>
         <p class="small text-body-secondary">Las filas sin producto se ignoran. Los precios incluyen IGV.</p>
         <div class="row g-2 mb-2" th:each="fila, i : *{filas}">
@@ -38,17 +55,21 @@
             <div class="col-12 col-md-8">
                 <p class="small text-body-secondary mb-1">Complete solo el dato del método elegido:</p>
                 <div class="row g-2">
-                    <div class="col-12 col-sm-4">
+                    <div class="col-12 col-sm-3">
                         <label for="montoRecibido" class="form-label small">Efectivo recibido (S/)</label>
                         <input type="number" class="form-control" th:field="*{montoRecibido}" step="0.10" min="0">
                     </div>
-                    <div class="col-6 col-sm-4">
+                    <div class="col-6 col-sm-3">
                         <label for="ultimosCuatro" class="form-label small">Tarjeta: últimos 4</label>
                         <input type="text" class="form-control" th:field="*{ultimosCuatro}" maxlength="4" inputmode="numeric">
                     </div>
-                    <div class="col-6 col-sm-4">
+                    <div class="col-6 col-sm-3">
                         <label for="celular" class="form-label small">Yape: celular</label>
                         <input type="text" class="form-control" th:field="*{celular}" maxlength="9" inputmode="numeric">
+                    </div>
+                    <div class="col-6 col-sm-3">
+                        <label for="numeroOperacion" class="form-label small">Transferencia: N.º operación</label>
+                        <input type="text" class="form-control" th:field="*{numeroOperacion}" maxlength="12" inputmode="numeric">
                     </div>
                 </div>
             </div>
